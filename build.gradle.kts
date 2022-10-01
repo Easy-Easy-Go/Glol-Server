@@ -6,7 +6,7 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
-	kotlin("kapt") version "1.3.61"
+	kotlin("kapt") version "1.7.10"
 	id("jacoco")
 }
 
@@ -23,8 +23,6 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
-val querydslVersion = "5.0.0"
 
 dependencies {
 	// ** starter ** //
@@ -44,8 +42,13 @@ dependencies {
 	// ** jpa ** //
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+	// ** querydsl ** //
+	val querydslVersion = "5.0.0"
+	implementation("com.querydsl:querydsl-jpa:$querydslVersion")
+	kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
+
 	// ** security ** //
-	implementation("org.springframework.boot:spring-boot-starter-security")
+//	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	// cache, redis
 	implementation("org.springframework.boot:spring-boot-starter-cache")
@@ -53,7 +56,7 @@ dependencies {
 	// ** test ** //
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
-	testImplementation("org.springframework.security:spring-security-test")
+//	testImplementation("org.springframework.security:spring-security-test")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
