@@ -19,24 +19,28 @@ constructor(
     private val summonerCustomRepository: SummonerCustomRepository
 ) : SummonerService {
 
-    override fun registrationSummoner(name: String) {
+    override fun registrationSummoner(name: String): SummonerVo {
         val summoner = summonerCustomRepository.findSummonerByName(name) ?: getSummoner(name)
 
-        save(summoner)
+        return save(summoner)
+            ?: throw IllegalArgumentException("Unknown Exception")
     }
 
-    private fun getSummoner(name: String): SummonerVo {
-        return WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
-                it.contentType = MediaType.APPLICATION_JSON
-                it.acceptCharset = listOf(StandardCharsets.UTF_8)
-                it.set("X-Riot-Token", riotProperties.secretKey)
-                it.set("Origin", riotProperties.origin)
-            }.retrieve().bodyToMono(SummonerVo().javaClass).block()
-            ?: throw IllegalArgumentException("Not Exists Summoner")
+    override fun getSummoner(name: String): SummonerVo {
+        val summonerVo = WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
+            it.contentType = MediaType.APPLICATION_JSON
+            it.acceptCharset = listOf(StandardCharsets.UTF_8)
+            it.set("X-Riot-Token", riotProperties.secretKey)
+            it.set("Origin", riotProperties.origin)
+        }.retrieve().bodyToMono(SummonerVo().javaClass)
+            .onErrorReturn(summonerCustomRepository.findSummonerByName("Banned Account")!!).block()
+            ?: throw IllegalArgumentException("Not Found Summoner")
+
+        return summonerVo
     }
 
-    private fun save(summoner: SummonerVo?) {
-        if (summoner != null && !summoner.visited) {
+    private fun save(summoner: SummonerVo?): SummonerVo? {
+        return if (summoner != null && !summoner.visited && summoner.name != "Banned Account") {
             summonerRepository.save(
                 Summoner(
                     id = summoner.id,
@@ -47,8 +51,9 @@ constructor(
                     visited = true
                 )
             )
+            summoner
         } else {
-            throw IllegalArgumentException("Already Exists Summoner")
+            summoner
         }
     }
 
