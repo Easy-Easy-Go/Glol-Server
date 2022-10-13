@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface SummonerRepository : JpaRepository<Summoner, String> {
+    fun findSummonerByName(name: String) : Summoner?
+    fun existsSummonerByName(name: String) : Boolean
 
 }
