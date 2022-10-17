@@ -39,6 +39,17 @@ constructor(
         return summonerVo
     }
 
+    override fun getPuuidByName(name: String): String {
+        return WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
+            it.contentType = MediaType.APPLICATION_JSON
+            it.acceptCharset = listOf(StandardCharsets.UTF_8)
+            it.set("X-Riot-Token", riotProperties.secretKey)
+            it.set("Origin", riotProperties.origin)
+        }.retrieve().bodyToMono(String().javaClass)
+            .onErrorReturn(summonerCustomRepository.findPuuidByName("bannedPuuid")!!).block()
+            ?: throw IllegalArgumentException("Not Found Summoner")
+    }
+
     private fun save(summoner: SummonerVo?): SummonerVo? {
         return if (summoner != null && !summoner.visited && summoner.name != "Banned Account") {
             summonerRepository.save(
