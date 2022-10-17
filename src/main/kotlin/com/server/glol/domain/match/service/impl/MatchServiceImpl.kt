@@ -112,13 +112,9 @@ class MatchServiceImpl(
             ?: throw IllegalArgumentException("retry please")
     }
 
-    private fun getRecentMatch(name: String): MutableList<String> {
-        return matchCustomRepository.findMatchIdBySummonerName(name)
-    }
-
     private fun getPuuidByName(name: String): String {
-        return summonerCustomRepository.findPuuidByName(name)?:
-        summonerService.getSummoner(name).puuid
+        return summonerCustomRepository.findPuuidByName(name)
+            ?: summonerService.getPuuidByName(name)
     }
 
     private fun getMatchIdsByPuuid(puuid: String, queue: Int, count: Int): MutableList<String> {
@@ -134,22 +130,26 @@ class MatchServiceImpl(
             ?: throw IllegalArgumentException("Not Exists Matches")
     }
 
-    private fun getMatchesByMatchId(matchIdList: MutableList<String>): MutableList<MatchResponse> {
+    private fun getMatchesByMatchId(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
         val matchList: MutableList<MatchDto> = mutableListOf()
 
         matchIdList.forEach {
             matchList.add(
-                WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + it).headers {
-                    it.contentType = MediaType.APPLICATION_JSON
-                    it.acceptCharset = listOf(StandardCharsets.UTF_8)
-                    it.set("X-Riot-Token", riotProperties.secretKey)
-                    it.set("Origin", riotProperties.origin)
-                }.retrieve().bodyToMono(MatchDto().javaClass).block()
-                    ?: throw IllegalArgumentException("Not Exists Match")
+                getMatchByMatchId(it)
             )
         }
 
-        return toMatchResponse(matchList)
+        return toMatchDetailDto(matchList)
+    }
+
+    private fun getMatchByMatchId(matchId: String): MatchDto {
+        return WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers {
+            it.contentType = MediaType.APPLICATION_JSON
+            it.acceptCharset = listOf(StandardCharsets.UTF_8)
+            it.set("X-Riot-Token", riotProperties.secretKey)
+            it.set("Origin", riotProperties.origin)
+        }.retrieve().bodyToMono(MatchDto().javaClass).block()
+            ?: throw IllegalArgumentException("Not Exists Match")
     }
 
     private fun toMatchResponse(matchDto: MutableList<MatchDto>): MutableList<MatchResponse> {
