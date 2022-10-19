@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MatchRepository: JpaRepository<Match, Long> {
     fun countByMatchId(matchId: String): Long
+    fun existsByMatchId(matchId: String): Boolean
 }
