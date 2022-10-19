@@ -1,9 +1,6 @@
 package com.server.glol.domain.match.entities
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.server.glol.domain.summoner.entites.Summoner
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -41,11 +38,26 @@ class Match(
     @Column(name = "control_ward_placed")
     val controlWardsPlaced: Int?,
 
+    @Column(name = "total_damage_dealt_to_champions")
+    val totalDamageDealtToChampions: Int?,
+
+    @Column(name = "total_minions_killed")
+    val totalMinionsKilled: Int,
+
+    @Column(name = "queue_type")
+    val queueType: String?,
+
+    @Column(name = "game_duration")
+    val gameDuration: Int?,
+
     @Column(name = "created_at")
     val createdAt: LocalDateTime?,
 
-    @Column(name = "renewedAt")
-    val renewedAt: LocalDate?,
+    @Column(name = "first_summoenr_spell")
+    val firstSummonerSpell: Int?,
+
+    @Column(name = "second_summoenr_spell")
+    val secondSummonerSpell: Int?,
 
     @ManyToOne(
         fetch = FetchType.LAZY,
@@ -62,10 +74,17 @@ class Match(
     @OneToOne(
         mappedBy = "match",
     )
-    val champion: Champion? = null
+    val champion: Champion? = null,
 ) {
 
     @Column(name = "match_idx")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long = 0
+
+    @OneToMany(
+        mappedBy = "match",
+    )
+    val _perks: MutableList<Perk> = mutableListOf()
+
+    val perks get() = _perks.toList()
 }
