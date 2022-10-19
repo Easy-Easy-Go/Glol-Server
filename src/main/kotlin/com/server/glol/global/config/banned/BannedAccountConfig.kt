@@ -11,7 +11,7 @@ class BannedAccountConfig(val summonerRepository: SummonerRepository) {
     @PostConstruct
     fun suspensionAccountSave() {
         if (!summonerRepository.existsSummonerByName("Banned Account")) {
-            summonerRepository.save(Summoner("banned", "banned", "Banned Account", "banned", 0, true))
+            summonerRepository.save(Summoner("bannedId", "bannedAccountId", "Banned Account", "bannedPuuid", 0, true))
         }
     }
 }
