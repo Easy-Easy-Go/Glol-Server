@@ -1,6 +1,6 @@
 package com.server.glol.domain.match.controller
 
-import com.server.glol.domain.match.repository.projection.MatchResponse
+import com.server.glol.domain.match.dto.MatchResponse
 import com.server.glol.domain.match.service.MatchService
 import org.springframework.web.bind.annotation.*
 
@@ -18,14 +18,12 @@ class MatchController(val matchService: MatchService) {
         return matchService.renewalMatches(name, queue, count)
     }
 
-    @PostMapping("/matches/by-name/{name}/Ids")
+    @GetMapping("/{matchId}")
     fun getMatch(
-        @PathVariable name: String,
-        @RequestParam queue: Int,
-        @RequestParam count: Int
-    ) : MutableList<MatchResponse>? {
+        @PathVariable matchId: String,
+    ) : MatchResponse {
 
-        return matchService.getMatches(name, queue, count)
+        return matchService.getMatch(matchId)
     }
 
 }
