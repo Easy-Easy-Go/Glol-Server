@@ -19,7 +19,7 @@ constructor(
     private val summonerCustomRepository: SummonerCustomRepository
 ) : SummonerService {
 
-    override fun registrationSummoner(name: String): SummonerVo {
+    override fun registerSummoner(name: String): SummonerVo {
         val summoner = summonerCustomRepository.findSummonerByName(name) ?: getSummoner(name)
 
         return save(summoner)
