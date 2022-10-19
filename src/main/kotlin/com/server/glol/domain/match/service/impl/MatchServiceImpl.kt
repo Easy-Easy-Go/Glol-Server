@@ -60,35 +60,38 @@ class MatchServiceImpl(
         val metadata = MetadataTo(match.metadata.matchId, toQueueType(match.info.queueId), match.info.gameDuration)
         val perks: MutableList<Int> = mutableListOf()
 
-        match.info.participants.forEach {
-            it.perks.styles.stream().map { it.selections.stream().map { print("==================== Perk is = $it.perk =================")
-                perks.add(it.perk) } }
+        match.info.participants.forEach { participantDto ->
+            participantDto.perks.styles.stream().map { perkStyleDto ->
+                perkStyleDto.selections.stream().map { perkStyleSelectionDto ->
+                    perks.add(perkStyleSelectionDto.perk)
+                }
+            }
             matchInfo.add(
                 MatchInfoTo(
-                    it.totalMinionsKilled,
-                    it.kills,
-                    it.assists,
-                    it.deaths,
-                    it.teamPosition,
-                    it.teamId,
-                    it.win,
-                    it.wardsPlaced,
-                    it.wardsKilled,
-                    it.wardsPlaced,
-                    it.totalDamageDealtToChampions,
-                    it.item0,
-                    it.item1,
-                    it.item2,
-                    it.item3,
-                    it.item4,
-                    it.item5,
-                    it.item6,
-                    it.championName,
-                    it.championId,
-                    it.champLevel,
-                    it.summonerName,
-                    it.summoner1Id,
-                    it.summoner2Id,
+                    participantDto.totalMinionsKilled,
+                    participantDto.kills,
+                    participantDto.assists,
+                    participantDto.deaths,
+                    participantDto.teamPosition,
+                    participantDto.teamId,
+                    participantDto.win,
+                    participantDto.wardsPlaced,
+                    participantDto.wardsKilled,
+                    participantDto.wardsPlaced,
+                    participantDto.totalDamageDealtToChampions,
+                    participantDto.item0,
+                    participantDto.item1,
+                    participantDto.item2,
+                    participantDto.item3,
+                    participantDto.item4,
+                    participantDto.item5,
+                    participantDto.item6,
+                    participantDto.championName,
+                    participantDto.championId,
+                    participantDto.champLevel,
+                    participantDto.summonerName,
+                    participantDto.summoner1Id,
+                    participantDto.summoner2Id,
                     perks
                 )
             )
@@ -99,48 +102,66 @@ class MatchServiceImpl(
     }
 
     private fun matchesSave(matches: MutableList<MatchDetailDto>) {
-        var match: Match
-        var matchId: String
+        lateinit var match: Match
+        lateinit var matchId: String
 
-        matches.forEach Break@{
-            matchId = it.matchId
+        matches.forEach Break@{ matchDetailDto ->
+            matchId = matchDetailDto.matchId
 
             if (matchRepository.countByMatchId(matchId) == 10L) {
                 return@Break
             }
-            val summoner = summonerRepository.findSummonerByName(it.name)
-                ?: ifNotExistsSummonerAccount(it.name)
+            val summoner = summonerRepository.findSummonerByName(matchDetailDto.name)
+                ?: notExistsSummonerAccount(matchDetailDto.name)
 
             match = matchRepository.save(
                 Match(
                     matchId = matchId,
-                    kills = it.kills,
-                    assists = it.assists,
-                    deaths = it.deaths,
-                    teamPosition = it.teamPosition,
-                    teamId = it.teamId,
-                    win = it.win,
-                    wardsPlaced = it.wardsPlaced,
-                    wardsKilled = it.wardsKilled,
-                    controlWardsPlaced = it.controlWardsPlaced,
+                    kills = matchDetailDto.kills,
+                    assists = matchDetailDto.assists,
+                    deaths = matchDetailDto.deaths,
+                    teamPosition = matchDetailDto.teamPosition,
+                    teamId = matchDetailDto.teamId,
+                    win = matchDetailDto.win,
+                    wardsPlaced = matchDetailDto.wardsPlaced,
+                    wardsKilled = matchDetailDto.wardsKilled,
+                    controlWardsPlaced = matchDetailDto.controlWardsPlaced,
                     createdAt = LocalDateTime.now(),
-                    totalDamageDealtToChampions = it.totalDamageDealtToChampions,
-                    totalMinionsKilled = it.totalMinionsKilled,
-                    queueType = it.queueId,
-                    gameDuration = it.gameDuration,
+                    totalDamageDealtToChampions = matchDetailDto.totalDamageDealtToChampions,
+                    totalMinionsKilled = matchDetailDto.totalMinionsKilled,
+                    queueType = matchDetailDto.queueId,
+                    gameDuration = matchDetailDto.gameDuration,
                     summoner = summoner,
-                    firstSummonerSpell = it.summoner1Id,
-                    secondSummonerSpell = it.summoner2Id
+                    firstSummonerSpell = matchDetailDto.summoner1Id,
+                    secondSummonerSpell = matchDetailDto.summoner2Id
                 )
             )
 
-            itemsRepository.save(Item(it.item0, it.item1, it.item2, it.item3, it.item4, it.item5, it.item6, match))
+            itemsRepository.save(
+                Item(
+                    matchDetailDto.item0,
+                    matchDetailDto.item1,
+                    matchDetailDto.item2,
+                    matchDetailDto.item3,
+                    matchDetailDto.item4,
+                    matchDetailDto.item5,
+                    matchDetailDto.item6,
+                    match
+                )
+            )
 
-            championRepository.save(Champion(it.championName, it.championId, it.championLevel, match))
+            championRepository.save(
+                Champion(
+                    matchDetailDto.championName,
+                    matchDetailDto.championId,
+                    matchDetailDto.championLevel,
+                    match
+                )
+            )
 
-            it.perks.styles.forEach {
-                it.selections.forEach {
-                    perkRepository.save(Perk(it.perk, match))
+            matchDetailDto.perks.styles.forEach { perkStyleDto ->
+                perkStyleDto.selections.forEach { perkStyleSelectionDto ->
+                    perkRepository.save(Perk(perkStyleSelectionDto.perk, match))
                 }
             }
         }
@@ -161,11 +182,12 @@ class MatchServiceImpl(
         val string: MutableList<String> = mutableListOf()
 
         return WebClient.create().get()
-            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?queue=" + queue + "&count=" + count).headers {
-                it.contentType = MediaType.APPLICATION_JSON
-                it.acceptCharset = listOf(StandardCharsets.UTF_8)
-                it.set("X-Riot-Token", riotProperties.secretKey)
-                it.set("Origin", riotProperties.origin)
+            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?queue=" + queue + "&count=" + count)
+            .headers { httpHeaders ->
+                httpHeaders.contentType = MediaType.APPLICATION_JSON
+                httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
+                httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
+                httpHeaders.set("Origin", riotProperties.origin)
             }.retrieve().bodyToMono(string::class.java).block()
             ?: throw IllegalArgumentException("Not Exists Matches")
     }
@@ -173,9 +195,9 @@ class MatchServiceImpl(
     private fun getMatchesByMatchId(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
         val matchList: MutableList<MatchDto> = mutableListOf()
 
-        matchIdList.forEach {
+        matchIdList.forEach { matchId ->
             matchList.add(
-                getMatchByMatchId(it)
+                getMatchByMatchId(matchId)
             )
         }
 
@@ -183,11 +205,11 @@ class MatchServiceImpl(
     }
 
     private fun getMatchByMatchId(matchId: String): MatchDto {
-        return WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers {
-            it.contentType = MediaType.APPLICATION_JSON
-            it.acceptCharset = listOf(StandardCharsets.UTF_8)
-            it.set("X-Riot-Token", riotProperties.secretKey)
-            it.set("Origin", riotProperties.origin)
+        return WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers { httpHeaders ->
+            httpHeaders.contentType = MediaType.APPLICATION_JSON
+            httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
+            httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
+            httpHeaders.set("Origin", riotProperties.origin)
         }.retrieve().bodyToMono(MatchDto().javaClass).block()
             ?: throw IllegalArgumentException("Not Exists Match")
     }
@@ -195,35 +217,35 @@ class MatchServiceImpl(
     private fun toMatchDetailDto(matchDto: MutableList<MatchDto>): MutableList<MatchDetailDto> {
         val matchDetailDto: MutableList<MatchDetailDto> = mutableListOf()
 
-        matchDto.forEach {
-            val matchId = it.metadata.matchId
-            val queueId = toQueueType(it.info.queueId)
-            val gameDuration = it.info.gameDuration
+        matchDto.forEach { matchDto ->
+            val matchId = matchDto.metadata.matchId
+            val queueId = toQueueType(matchDto.info.queueId)
+            val gameDuration = matchDto.info.gameDuration
 
-            it.info.participants.forEach {
+            matchDto.info.participants.forEach { participantDto ->
                 matchDetailDto.add(
                     MatchDetailDto(
                         matchId = matchId,
-                        kills = it.kills,
-                        assists = it.assists,
-                        deaths = it.deaths,
-                        teamPosition = it.teamPosition,
-                        teamId = it.teamId,
-                        win = it.win,
-                        wardsPlaced = it.wardsPlaced,
-                        wardsKilled = it.wardsKilled,
-                        controlWardsPlaced = it.challenges.controlWardsPlaced,
-                        item0 = it.item0,
-                        item1 = it.item1,
-                        item2 = it.item2,
-                        item3 = it.item3,
-                        item4 = it.item4,
-                        item5 = it.item5,
-                        item6 = it.item6,
-                        championName = it.championName,
-                        championId = it.championId,
-                        championLevel = it.champLevel,
-                        name = it.summonerName,
+                        kills = participantDto.kills,
+                        assists = participantDto.assists,
+                        deaths = participantDto.deaths,
+                        teamPosition = participantDto.teamPosition,
+                        teamId = participantDto.teamId,
+                        win = participantDto.win,
+                        wardsPlaced = participantDto.wardsPlaced,
+                        wardsKilled = participantDto.wardsKilled,
+                        controlWardsPlaced = participantDto.challenges.controlWardsPlaced,
+                        item0 = participantDto.item0,
+                        item1 = participantDto.item1,
+                        item2 = participantDto.item2,
+                        item3 = participantDto.item3,
+                        item4 = participantDto.item4,
+                        item5 = participantDto.item5,
+                        item6 = participantDto.item6,
+                        championName = participantDto.championName,
+                        championId = participantDto.championId,
+                        championLevel = participantDto.champLevel,
+                        name = participantDto.summonerName,
                         queueId = queueId,
                         gameDuration = gameDuration,
                         totalMinionsKilled = it.totalMinionsKilled,
