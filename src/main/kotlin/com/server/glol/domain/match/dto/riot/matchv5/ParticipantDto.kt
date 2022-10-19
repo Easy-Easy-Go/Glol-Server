@@ -1,5 +1,7 @@
 package com.server.glol.domain.match.dto.riot.matchv5
 
+import com.server.glol.domain.match.dto.riot.matchv5.rune.PerksDto
+
 class ParticipantDto(
     val assists: Int,
     val champLevel: Int,
@@ -22,7 +24,10 @@ class ParticipantDto(
     val wardsKilled: Int,
     val challenges: Challenges,
     val totalDamageDealtToChampions: Int,
-    val totalMinionsKilled: Int
+    val totalMinionsKilled: Int,
+    val summoner1Id: Int,
+    val summoner2Id: Int,
+    val perks: PerksDto,
 ) {
 
 }
