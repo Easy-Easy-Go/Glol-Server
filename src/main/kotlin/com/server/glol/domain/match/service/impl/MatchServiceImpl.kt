@@ -168,7 +168,7 @@ class MatchServiceImpl(
         summonerService.registerSummoner(summonerName)
 
         return summonerRepository.findSummonerByName(summonerName)
-            ?: throw IllegalArgumentException("retry please")
+            ?: summonerRepository.findSummonerByName(BannedAccountConfig.name)!!
     }
 
     private fun getPuuidByName(name: String): String {
