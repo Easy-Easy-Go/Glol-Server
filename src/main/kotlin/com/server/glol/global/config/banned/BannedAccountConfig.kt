@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 
 @Component
-class BannedAccountConfig(val summonerRepository: SummonerRepository) {
+class BannedAccountConfig(private val summonerRepository: SummonerRepository) {
 
     companion object {
         const val name = "Banned Account"

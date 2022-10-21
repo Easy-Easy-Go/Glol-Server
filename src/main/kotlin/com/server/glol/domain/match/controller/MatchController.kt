@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/match")
-class MatchController(val matchService: MatchService) {
+class MatchController(private val matchService: MatchService) {
 
     @PostMapping("/renewal/{name}")
     fun renewalMatches(

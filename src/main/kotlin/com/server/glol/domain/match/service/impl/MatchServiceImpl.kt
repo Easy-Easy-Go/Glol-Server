@@ -25,15 +25,14 @@ import java.time.LocalDateTime
 
 @Service
 class MatchServiceImpl(
-    val riotProperties: RiotProperties,
-    val summonerRepository: SummonerRepository,
-    val summonerCustomRepository: SummonerCustomRepository,
-    val matchCustomRepository: MatchCustomRepository,
-    val matchRepository: MatchRepository,
-    val itemsRepository: ItemRepository,
-    val championRepository: ChampionRepository,
-    val summonerService: SummonerService,
-    val perkRepository: PerkRepository,
+    private val summonerRepository: SummonerRepository,
+    private val summonerCustomRepository: SummonerCustomRepository,
+    private val matchCustomRepository: MatchCustomRepository,
+    private val matchRepository: MatchRepository,
+    private val itemsRepository: ItemRepository,
+    private val championRepository: ChampionRepository,
+    private val summonerService: SummonerService,
+    private val perkRepository: PerkRepository,
 ) : MatchService {
 
     @Transactional
