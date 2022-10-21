@@ -102,11 +102,9 @@ class MatchServiceImpl(
     }
 
     private fun matchesSave(matches: MutableList<MatchDetailDto>) {
-        lateinit var match: Match
-        lateinit var matchId: String
 
         matches.forEach Break@{ matchDetailDto ->
-            matchId = matchDetailDto.matchId
+            val matchId: String = matchDetailDto.matchId
 
             if (matchRepository.countByMatchId(matchId) == 10L) {
                 return@Break
@@ -114,7 +112,7 @@ class MatchServiceImpl(
             val summoner = summonerRepository.findSummonerByName(matchDetailDto.name)
                 ?: notExistsSummonerAccount(matchDetailDto.name)
 
-            match = matchRepository.save(
+            val match = matchRepository.save(
                 Match(
                     matchId = matchId,
                     kills = matchDetailDto.kills,
