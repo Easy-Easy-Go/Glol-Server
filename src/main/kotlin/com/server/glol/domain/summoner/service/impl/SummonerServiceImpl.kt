@@ -12,8 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 
 @Service
-class SummonerServiceImpl
-constructor(
+class SummonerServiceImpl(
     private val riotProperties: RiotProperties,
     private val summonerRepository: SummonerRepository,
     private val summonerCustomRepository: SummonerCustomRepository
