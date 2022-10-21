@@ -259,8 +259,7 @@ class MatchServiceImpl(
         return matchDetailDto
     }
 
-    private fun toQueueType(queueId: Int): String {
-        return when (queueId) {
+    private fun toQueueType(queueId: Int): String = when (queueId) {
             420 -> "솔랭"
             430 -> "일반"
             440 -> "자유랭크"
@@ -274,5 +273,4 @@ class MatchServiceImpl(
                 "기타"
             }
         }
-    }
 }
