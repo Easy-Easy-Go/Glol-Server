@@ -1,6 +1,7 @@
 package com.server.glol.domain.match.dto.riot.matchv5.rune
 
-class PerkStyleDto(
-    val selections: MutableList<PerkStyleSelectionDto>
-) {
-}
+data class PerkStyleDto(
+    val description: String = "",
+    val selections: MutableList<PerkStyleSelectionDto> = mutableListOf(),
+    val style: Int = 0
+)

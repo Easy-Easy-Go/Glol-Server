@@ -1,6 +1,6 @@
 package com.server.glol.domain.match.dto
 
-class MetadataTo(
+data class MetadataTo(
     val matchId: String,
     val queueId: String,
     val gameDuration: Int,

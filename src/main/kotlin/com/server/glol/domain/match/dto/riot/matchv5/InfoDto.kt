@@ -1,12 +1,8 @@
 package com.server.glol.domain.match.dto.riot.matchv5
 
-class InfoDto(
-    val queueId: Int,
-    val gameDuration: Int,
-    val participants: MutableList<ParticipantDto>,
-    val teams: MutableList<TeamDto>,
-) {
-
-    constructor(): this(0, 0, mutableListOf(), mutableListOf())
-
-}
+data class InfoDto(
+    val queueId: Int = 0,
+    val gameDuration: Int = 0,
+    val participants: MutableList<ParticipantDto> = mutableListOf(),
+    val teams: MutableList<TeamDto> = mutableListOf(),
+)

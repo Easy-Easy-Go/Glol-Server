@@ -1,8 +1,6 @@
 package com.server.glol.domain.match.dto
 
-import com.server.glol.domain.match.dto.riot.matchv5.rune.PerksDto
-
-class MatchDetailDto(
+data class MatchDetailDto(
     val matchId: String,
     val queueId: String,
     val gameDuration: Int,
@@ -30,6 +28,5 @@ class MatchDetailDto(
     val name: String,
     val summoner1Id: Int,
     val summoner2Id: Int,
-    val perks: PerksDto,
 )  {
 }
