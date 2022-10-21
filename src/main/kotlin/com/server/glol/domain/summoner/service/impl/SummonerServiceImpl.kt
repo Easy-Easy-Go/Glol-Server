@@ -22,36 +22,11 @@ constructor(
     override fun registerSummoner(name: String): SummonerVo {
         val summoner = summonerCustomRepository.findSummonerByName(name) ?: getSummoner(name)
 
-        return save(summoner)
-            ?: throw IllegalArgumentException("Unknown Exception")
+        save(summoner)
     }
 
-    override fun getSummoner(name: String): SummonerVo {
-        val summonerVo = WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
-            it.contentType = MediaType.APPLICATION_JSON
-            it.acceptCharset = listOf(StandardCharsets.UTF_8)
-            it.set("X-Riot-Token", riotProperties.secretKey)
-            it.set("Origin", riotProperties.origin)
-        }.retrieve().bodyToMono(SummonerVo().javaClass)
-            .onErrorReturn(summonerCustomRepository.findSummonerByName("Banned Account")!!).block()
-            ?: throw IllegalArgumentException("Not Found Summoner")
-
-        return summonerVo
-    }
-
-    override fun getPuuidByName(name: String): String {
-        return WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
-            it.contentType = MediaType.APPLICATION_JSON
-            it.acceptCharset = listOf(StandardCharsets.UTF_8)
-            it.set("X-Riot-Token", riotProperties.secretKey)
-            it.set("Origin", riotProperties.origin)
-        }.retrieve().bodyToMono(String().javaClass)
-            .onErrorReturn(summonerCustomRepository.findPuuidByName("bannedPuuid")!!).block()
-            ?: throw IllegalArgumentException("Not Found Summoner")
-    }
-
-    private fun save(summoner: SummonerVo?): SummonerVo? {
-        return if (summoner != null && !summoner.visited && summoner.name != "Banned Account") {
+    private fun save(summoner: SummonerVo?) {
+        if (summoner != null && !summoner.visited && summoner.name != BannedAccountConfig.name) {
             summonerRepository.save(
                 Summoner(
                     id = summoner.id,
@@ -62,9 +37,6 @@ constructor(
                     visited = true
                 )
             )
-            summoner
-        } else {
-            summoner
         }
     }
 

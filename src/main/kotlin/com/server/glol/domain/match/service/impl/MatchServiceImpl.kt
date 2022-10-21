@@ -165,9 +165,10 @@ class MatchServiceImpl(
         }
     }
 
-    private fun ifNotExistsSummonerAccount(summonerName: String): Summoner {
-        val summoner = summonerService.registerSummoner(summonerName)
-        return summonerRepository.findSummonerByName(summoner.name)
+    private fun notExistsSummonerAccount(summonerName: String): Summoner {
+        summonerService.registerSummoner(summonerName)
+
+        return summonerRepository.findSummonerByName(summonerName)
             ?: throw IllegalArgumentException("retry please")
     }
 
