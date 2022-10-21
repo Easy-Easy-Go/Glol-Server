@@ -86,37 +86,34 @@ class MatchCustomRepositoryImpl(
 
         val matchInfoDto: MutableList<MatchInfoTo> = mutableListOf()
 
-        var first = 0
-        var second = 6
-        matchDao!!.forEach {
+        matchDao!!.forEachIndexed { index, match ->
             matchInfoDto.add(
                 MatchInfoTo(
-                    it.totalMinionsKilled,
-                    it.kills,
-                    it.assists,
-                    it.deaths,
-                    it.teamPosition,
-                    it.teamId,
-                    it.win,
-                    it.wardsPlaced,
-                    it.wardsKilled,
-                    it.controlWardsPlaced,
-                    it.totalDamageDealtToChampions,
-                    it.item0,
-                    it.item1,
-                    it.item2,
-                    it.item3,
-                    it.item4,
-                    it.item5,
-                    it.item6,
-                    it.championName,
-                    it.championId,
-                    it.championLevel,
-                    it.name,
-                    it.firstSummonerSpell,
-                    it.secondSummonerSpell,
-                    runes.subList(first, second)
-                )
+                    match.totalMinionsKilled,
+                    match.kills,
+                    match.assists,
+                    match.deaths,
+                    match.teamPosition,
+                    match.teamId,
+                    match.win,
+                    match.wardsPlaced,
+                    match.wardsKilled,
+                    match.controlWardsPlaced,
+                    match.totalDamageDealtToChampions,
+                    match.item0,
+                    match.item1,
+                    match.item2,
+                    match.item3,
+                    match.item4,
+                    match.item5,
+                    match.item6,
+                    match.championName,
+                    match.championId,
+                    match.championLevel,
+                    match.name,
+                    match.firstSummonerSpell,
+                    match.secondSummonerSpell,
+                    )
             )
             first += 6
             second += 6

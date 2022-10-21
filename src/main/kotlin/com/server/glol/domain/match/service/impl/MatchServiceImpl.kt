@@ -220,37 +220,36 @@ class MatchServiceImpl(
             val queueId = toQueueType(matchDto.info.queueId)
             val gameDuration = matchDto.info.gameDuration
 
-            matchDto.info.participants.forEach { participantDto ->
+            matchDto.info.participants.forEach { participant ->
                 matchDetailDto.add(
                     MatchDetailDto(
                         matchId = matchId,
-                        kills = participantDto.kills,
-                        assists = participantDto.assists,
-                        deaths = participantDto.deaths,
-                        teamPosition = participantDto.teamPosition,
-                        teamId = participantDto.teamId,
-                        win = participantDto.win,
-                        wardsPlaced = participantDto.wardsPlaced,
-                        wardsKilled = participantDto.wardsKilled,
-                        controlWardsPlaced = participantDto.challenges.controlWardsPlaced,
-                        item0 = participantDto.item0,
-                        item1 = participantDto.item1,
-                        item2 = participantDto.item2,
-                        item3 = participantDto.item3,
-                        item4 = participantDto.item4,
-                        item5 = participantDto.item5,
-                        item6 = participantDto.item6,
-                        championName = participantDto.championName,
-                        championId = participantDto.championId,
-                        championLevel = participantDto.champLevel,
-                        name = participantDto.summonerName,
+                        kills = participant.kills,
+                        assists = participant.assists,
+                        deaths = participant.deaths,
+                        teamPosition = participant.teamPosition,
+                        teamId = participant.teamId,
+                        win = participant.win,
+                        wardsPlaced = participant.wardsPlaced,
+                        wardsKilled = participant.wardsKilled,
+                        controlWardsPlaced = participant.challenges.controlWardsPlaced,
+                        item0 = participant.item0,
+                        item1 = participant.item1,
+                        item2 = participant.item2,
+                        item3 = participant.item3,
+                        item4 = participant.item4,
+                        item5 = participant.item5,
+                        item6 = participant.item6,
+                        championName = participant.championName,
+                        championId = participant.championId,
+                        championLevel = participant.champLevel,
+                        name = participant.summonerName,
                         queueId = queueId,
                         gameDuration = gameDuration,
-                        totalMinionsKilled = it.totalMinionsKilled,
-                        totalDamageDealtToChampions = it.totalDamageDealtToChampions,
-                        summoner1Id = it.summoner1Id,
-                        summoner2Id = it.summoner2Id,
-                        perks = it.perks
+                        totalMinionsKilled = participant.totalMinionsKilled,
+                        totalDamageDealtToChampions = participant.totalDamageDealtToChampions,
+                        summoner1Id = participant.summoner1Id,
+                        summoner2Id = participant.summoner2Id,
                     )
                 )
             }
