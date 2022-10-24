@@ -7,6 +7,9 @@ import com.server.glol.domain.match.entities.QChampion.champion
 import com.server.glol.domain.match.entities.QItem.item
 import com.server.glol.domain.match.entities.QMatch.match
 import com.server.glol.domain.summoner.entites.QSummoner.summoner
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -108,4 +111,50 @@ class MatchCustomRepositoryImpl(
         return MatchResponse(MetadataTo(metadataTo.matchId, metadataTo.queueId, metadataTo.gameDuration), matchInfoDto)
     }
 
+    override fun findAllByMatchIds(name: String, matchIds: MutableList<String>, pageable: Pageable): Page<AllMatchVo> {
+
+        val matches: MutableList<AllMatchVo> = query.select(
+            QAllMatchVo(
+                match.matchId,
+                match.gameDuration,
+                match.queueType,
+                match.totalMinionsKilled,
+                match.kills,
+                match.assists,
+                match.deaths,
+                match.win,
+                match.wardsPlaced,
+                match.wardsKilled,
+                match.controlWardsPlaced,
+                match.firstSummonerSpell,
+                match.secondSummonerSpell,
+                match.item.item0,
+                match.item.item1,
+                match.item.item2,
+                match.item.item3,
+                match.item.item4,
+                match.item.item5,
+                match.item.item6,
+                match.champion.championName,
+                match.champion.championId,
+                match.champion.championLevel,
+                )
+        )
+            .from(match)
+            .where(match.matchId.`in`(matchIds), summoner.name.eq(name))
+            .innerJoin(match.summoner, summoner)
+            .innerJoin(match.item, item)
+            .innerJoin(match.champion, champion)
+            .orderBy(match.createdAt.desc())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        val count: Long? = query.select(match.count())
+            .from(match)
+            .where(match.matchId.`in`(matchIds))
+            .fetchOne()
+
+        return PageImpl(matches, pageable, count!!)
+    }
 }
