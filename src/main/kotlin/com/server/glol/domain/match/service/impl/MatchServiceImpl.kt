@@ -5,7 +5,6 @@ import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
 import com.server.glol.domain.match.entities.Champion
 import com.server.glol.domain.match.entities.Item
 import com.server.glol.domain.match.entities.Match
-import com.server.glol.domain.match.entities.Perk
 import com.server.glol.domain.match.repository.*
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.MatchServiceFacade
@@ -32,7 +31,6 @@ class MatchServiceImpl(
     private val summonerServiceFacade: SummonerServiceFacade,
     private val summonerService: SummonerService,
     private val matchServiceFacade: MatchServiceFacade,
-    private val perkRepository: PerkRepository,
 ) : MatchService {
 
     @Transactional
@@ -58,14 +56,9 @@ class MatchServiceImpl(
     private fun toMatchResponse(match: MatchDto): MatchResponse {
         val matchInfo: MutableList<MatchInfoTo> = mutableListOf()
         val metadata = MetadataTo(match.metadata.matchId, toQueueType(match.info.queueId), match.info.gameDuration)
-        val perks: MutableList<Int> = mutableListOf()
 
         match.info.participants.forEach { participantDto ->
-            participantDto.perks.styles.stream().map { perkStyleDto ->
-                perkStyleDto.selections.stream().map { perkStyleSelectionDto ->
-                    perks.add(perkStyleSelectionDto.perk)
-                }
-            }
+
             matchInfo.add(
                 MatchInfoTo(
                     participantDto.totalMinionsKilled,
@@ -92,7 +85,6 @@ class MatchServiceImpl(
                     participantDto.summonerName,
                     participantDto.summoner1Id,
                     participantDto.summoner2Id,
-                    perks
                 )
             )
 
@@ -156,12 +148,6 @@ class MatchServiceImpl(
                     match
                 )
             )
-
-            matchDetailDto.perks.styles.forEach { perkStyleDto ->
-                perkStyleDto.selections.forEach { perkStyleSelectionDto ->
-                    perkRepository.save(Perk(perkStyleSelectionDto.perk, match))
-                }
-            }
         }
     }
 
@@ -235,17 +221,17 @@ class MatchServiceImpl(
     }
 
     private fun toQueueType(queueId: Int): String = when (queueId) {
-            420 -> "솔랭"
-            430 -> "일반"
-            440 -> "자유랭크"
-            450 -> "무작위 총력전"
-            700 -> "격전"
-            920 -> "포로왕"
-            1020 -> "단일"
-            1400 -> "궁극기 주문서"
-            1900 -> "우르프"
-            else -> {
-                "기타"
-            }
+        420 -> "솔랭"
+        430 -> "일반"
+        440 -> "자유랭크"
+        450 -> "무작위 총력전"
+        700 -> "격전"
+        920 -> "포로왕"
+        1020 -> "단일"
+        1400 -> "궁극기 주문서"
+        1900 -> "우르프"
+        else -> {
+            "기타"
         }
+    }
 }

@@ -1,17 +1,11 @@
 package com.server.glol.domain.match.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.server.glol.domain.match.dto.MatchInfoTo
-import com.server.glol.domain.match.dto.MatchResponse
-import com.server.glol.domain.match.dto.MetadataTo
-import com.server.glol.domain.match.dto.projection.MatchDao
-import com.server.glol.domain.match.dto.projection.MetadataDao
-import com.server.glol.domain.match.dto.projection.QMatchDao
-import com.server.glol.domain.match.dto.projection.QMetadataDao
+import com.server.glol.domain.match.dto.*
+import com.server.glol.domain.match.dto.projection.*
 import com.server.glol.domain.match.entities.QChampion.champion
 import com.server.glol.domain.match.entities.QItem.item
 import com.server.glol.domain.match.entities.QMatch.match
-import com.server.glol.domain.match.entities.QPerk.perk
 import com.server.glol.domain.summoner.entites.QSummoner.summoner
 import org.springframework.stereotype.Repository
 
@@ -30,13 +24,8 @@ class MatchCustomRepositoryImpl(
 
     override fun findMatchesByMatchIds(matchId: String): MatchResponse? {
 
-        val runes: MutableList<Int> = query.select(perk.rune)
-            .from(perk)
-            .where(perk.match.matchId.eq(matchId))
-            .fetch()
-
-        val matchDao: MutableList<MatchDao>? = query.select(
-            QMatchDao(
+        val matchDao: MutableList<MatchVo>? = query.select(
+            QMatchVo(
                 match.totalMinionsKilled,
                 match.kills,
                 match.assists,
@@ -68,12 +57,11 @@ class MatchCustomRepositoryImpl(
             .innerJoin(match.summoner, summoner)
             .innerJoin(match.item, item)
             .innerJoin(match.champion, champion)
-            .innerJoin(match._perks, perk)
             .where(match.matchId.eq(matchId))
             .fetch()
 
-        val metadataTo: MetadataDao = query.select(
-            QMetadataDao(
+        val metadataTo: MetadataVo = query.select(
+            QMetadataVo(
                 match.matchId,
                 match.queueType,
                 match.gameDuration
@@ -113,10 +101,8 @@ class MatchCustomRepositoryImpl(
                     match.name,
                     match.firstSummonerSpell,
                     match.secondSummonerSpell,
-                    )
+                )
             )
-            first += 6
-            second += 6
         }
 
         return MatchResponse(MetadataTo(metadataTo.matchId, metadataTo.queueId, metadataTo.gameDuration), matchInfoDto)
