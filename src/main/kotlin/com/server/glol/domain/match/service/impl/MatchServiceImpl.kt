@@ -8,16 +8,17 @@ import com.server.glol.domain.match.entities.Match
 import com.server.glol.domain.match.entities.Perk
 import com.server.glol.domain.match.repository.*
 import com.server.glol.domain.match.service.MatchService
+import com.server.glol.domain.match.service.MatchServiceFacade
 import com.server.glol.domain.summoner.entites.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.service.SummonerService
-import com.server.glol.global.config.properties.RiotProperties
-import org.springframework.http.MediaType
+import com.server.glol.domain.summoner.service.SummonerServiceFacade
+import com.server.glol.global.config.banned.BannedAccountConfig
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.reactive.function.client.WebClient
-import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
 @Service
@@ -28,7 +29,9 @@ class MatchServiceImpl(
     private val matchRepository: MatchRepository,
     private val itemsRepository: ItemRepository,
     private val championRepository: ChampionRepository,
+    private val summonerServiceFacade: SummonerServiceFacade,
     private val summonerService: SummonerService,
+    private val matchServiceFacade: MatchServiceFacade,
     private val perkRepository: PerkRepository,
 ) : MatchService {
 
@@ -39,14 +42,14 @@ class MatchServiceImpl(
         val matchIds: MutableList<String> =
             matchServiceFacade.getMatchIds(puuid, matchPageable)
 
-        val matches = getMatchesByMatchId(matchIds)
+        val matches = getMatchesDetail(matchIds)
 
         matchesSave(matches)
     }
 
     override fun getMatch(matchId: String): MatchResponse {
         if (!matchRepository.existsByMatchId(matchId)) {
-            return toMatchResponse(getMatchByMatchId(matchId))
+            return toMatchResponse(matchServiceFacade.getMatch(matchId))
         }
 
         return matchCustomRepository.findMatchesByMatchIds(matchId)!!
@@ -169,45 +172,21 @@ class MatchServiceImpl(
             ?: summonerRepository.findSummonerByName(BannedAccountConfig.name)!!
     }
 
-    private fun getPuuidByName(name: String): String {
+    private fun getPuuid(name: String): String {
         return summonerCustomRepository.findPuuidByName(name)
-            ?: summonerService.getPuuidByName(name)
+            ?: summonerServiceFacade.getPuuid(name)
     }
 
-    private fun getMatchIdsByPuuid(puuid: String, queue: Int, count: Int): MutableList<String> {
-        val string: MutableList<String> = mutableListOf()
-
-        return WebClient.create().get()
-            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?queue=" + queue + "&count=" + count)
-            .headers { httpHeaders ->
-                httpHeaders.contentType = MediaType.APPLICATION_JSON
-                httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
-                httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
-                httpHeaders.set("Origin", riotProperties.origin)
-            }.retrieve().bodyToMono(string::class.java).block()
-            ?: throw IllegalArgumentException("Not Exists Matches")
-    }
-
-    private fun getMatchesByMatchId(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
+    private fun getMatchesDetail(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
         val matchList: MutableList<MatchDto> = mutableListOf()
 
         matchIdList.forEach { matchId ->
             matchList.add(
-                getMatchByMatchId(matchId)
+                matchServiceFacade.getMatch(matchId)
             )
         }
 
         return toMatchDetailDto(matchList)
-    }
-
-    private fun getMatchByMatchId(matchId: String): MatchDto {
-        return WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers { httpHeaders ->
-            httpHeaders.contentType = MediaType.APPLICATION_JSON
-            httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
-            httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
-            httpHeaders.set("Origin", riotProperties.origin)
-        }.retrieve().bodyToMono(MatchDto().javaClass).block()
-            ?: throw IllegalArgumentException("Not Exists Match")
     }
 
     private fun toMatchDetailDto(matchDto: MutableList<MatchDto>): MutableList<MatchDetailDto> {
