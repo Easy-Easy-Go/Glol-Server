@@ -1,5 +1,6 @@
 package com.server.glol.domain.match.controller
 
+import com.server.glol.domain.match.dto.MatchPageable
 import com.server.glol.domain.match.service.MatchService
 import org.springframework.web.bind.annotation.*
 
@@ -10,9 +11,8 @@ class MatchController(private val matchService: MatchService) {
     @PostMapping("/renewal/{name}")
     fun renewalMatches(
         @PathVariable name: String,
-        @RequestParam queue: Int,
-        @RequestParam count: Int
-    ) = matchService.renewalMatches(name, queue, count)
+        @RequestParam("matchPageable") matchPageable: MatchPageable,
+    ) = matchService.renewalMatches(name, matchPageable)
 
     @GetMapping("/{matchId}")
     fun getMatch(

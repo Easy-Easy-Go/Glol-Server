@@ -1,9 +1,6 @@
 package com.server.glol.domain.match.service.impl
 
-import com.server.glol.domain.match.dto.MatchDetailDto
-import com.server.glol.domain.match.dto.MatchInfoTo
-import com.server.glol.domain.match.dto.MatchResponse
-import com.server.glol.domain.match.dto.MetadataTo
+import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
 import com.server.glol.domain.match.entities.Champion
 import com.server.glol.domain.match.entities.Item
@@ -36,10 +33,11 @@ class MatchServiceImpl(
 ) : MatchService {
 
     @Transactional
-    override fun renewalMatches(name: String, queue: Int, count: Int) {
-        val puuid = getPuuidByName(name)
+    override fun renewalMatches(name: String, matchPageable: MatchPageable) {
+        val puuid = getPuuid(name)
 
-        val matchIds: MutableList<String> = getMatchIdsByPuuid(puuid, queue, count)
+        val matchIds: MutableList<String> =
+            matchServiceFacade.getMatchIds(puuid, matchPageable)
 
         val matches = getMatchesByMatchId(matchIds)
 
