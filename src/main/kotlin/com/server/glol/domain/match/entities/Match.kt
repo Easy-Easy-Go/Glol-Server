@@ -80,11 +80,4 @@ class Match(
     @Column(name = "match_idx")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long = 0
-
-    @OneToMany(
-        mappedBy = "match",
-    )
-    val _perks: MutableList<Perk> = mutableListOf()
-
-    val perks get() = _perks.toList()
 }

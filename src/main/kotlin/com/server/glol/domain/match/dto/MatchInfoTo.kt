@@ -1,8 +1,5 @@
 package com.server.glol.domain.match.dto
 
-import com.server.glol.domain.match.dto.projection.RuneVo
-import com.server.glol.domain.match.dto.riot.matchv5.rune.PerkStyleDto
-
 data class MatchInfoTo(
     val totalMinionsKilled: Int,
     val kills: Int,
