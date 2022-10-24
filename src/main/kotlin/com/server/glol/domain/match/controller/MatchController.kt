@@ -11,7 +11,7 @@ class MatchController(private val matchService: MatchService) {
     @PostMapping("/renewal/{name}")
     fun renewalMatches(
         @PathVariable name: String,
-        @RequestParam("matchPageable") matchPageable: MatchPageable,
+        matchPageable: MatchPageable,
     ) = matchService.renewalMatches(name, matchPageable)
 
     @GetMapping("/{matchId}")
