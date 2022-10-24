@@ -1,6 +1,7 @@
 package com.server.glol.domain.match.service.impl
 
 import com.server.glol.domain.match.dto.*
+import com.server.glol.domain.match.dto.projection.AllMatchVo
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
 import com.server.glol.domain.match.entities.Champion
 import com.server.glol.domain.match.entities.Item
@@ -51,6 +52,24 @@ class MatchServiceImpl(
         }
 
         return matchCustomRepository.findMatchesByMatchIds(matchId)!!
+    }
+
+    override fun getMatches(name: String, matchPageable: MatchPageable, pageable: Pageable): Page<AllMatchVo> {
+        if (!summonerRepository.existsSummonerByName(name)) {
+            throw IllegalArgumentException("Not found Summoner")
+        }
+
+        val matchIds: MutableList<String> = getMatchIds(name, matchPageable)
+
+        return matchCustomRepository.findAllByMatchIds(name, matchIds, pageable)
+    }
+
+    private fun getMatchIds(name: String, renewalMatchesDto: MatchPageable): MutableList<String> {
+        val matchIds = matchCustomRepository.findMatchIdBySummonerName(name)
+        if (matchIds.isEmpty()) {
+            return matchServiceFacade.getMatchIds(getPuuid(name), renewalMatchesDto)
+        }
+        return matchIds
     }
 
     private fun toMatchResponse(match: MatchDto): MatchResponse {
