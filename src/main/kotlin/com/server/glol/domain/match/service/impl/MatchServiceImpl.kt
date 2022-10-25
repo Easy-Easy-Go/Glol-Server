@@ -9,7 +9,7 @@ import com.server.glol.domain.match.entities.Match
 import com.server.glol.domain.match.repository.*
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.MatchServiceFacade
-import com.server.glol.domain.summoner.entites.Summoner
+import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.service.SummonerService

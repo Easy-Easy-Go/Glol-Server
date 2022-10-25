@@ -1,7 +1,7 @@
 package com.server.glol.domain.summoner.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.server.glol.domain.summoner.entites.QSummoner.summoner
+import com.server.glol.domain.summoner.entities.QSummoner.summoner
 import com.server.glol.domain.summoner.repository.projection.QSummonerVo
 import com.server.glol.domain.summoner.repository.projection.SummonerVo
 import org.springframework.stereotype.Repository

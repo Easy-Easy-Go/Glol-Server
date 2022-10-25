@@ -1,4 +1,4 @@
-package com.server.glol.domain.summoner.entites
+package com.server.glol.domain.summoner.entities
 
 import javax.persistence.*
 

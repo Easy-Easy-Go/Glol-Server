@@ -1,6 +1,6 @@
 package com.server.glol.domain.match.entities
 
-import com.server.glol.domain.summoner.entites.Summoner
+import com.server.glol.domain.summoner.entities.Summoner
 import java.time.LocalDateTime
 import javax.persistence.*
 

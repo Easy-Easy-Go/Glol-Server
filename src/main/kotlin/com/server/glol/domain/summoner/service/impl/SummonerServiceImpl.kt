@@ -1,6 +1,6 @@
 package com.server.glol.domain.summoner.service.impl
 
-import com.server.glol.domain.summoner.entites.Summoner
+import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerVo

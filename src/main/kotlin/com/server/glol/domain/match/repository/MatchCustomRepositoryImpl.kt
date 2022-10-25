@@ -6,7 +6,7 @@ import com.server.glol.domain.match.dto.projection.*
 import com.server.glol.domain.match.entities.QChampion.champion
 import com.server.glol.domain.match.entities.QItem.item
 import com.server.glol.domain.match.entities.QMatch.match
-import com.server.glol.domain.summoner.entites.QSummoner.summoner
+import com.server.glol.domain.summoner.entities.QSummoner.summoner
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
