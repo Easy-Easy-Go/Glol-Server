@@ -17,13 +17,12 @@ class MatchCustomRepositoryImpl(
     private val query: JPAQueryFactory
 ) : MatchCustomRepository {
 
-    override fun findMatchIdBySummonerName(name: String): MutableList<String> {
-        return query.select(match.matchId)
-            .from(match)
-            .innerJoin(match.summoner, summoner)
-            .where(summoner.name.eq(name))
-            .fetch()
-    }
+    override fun findMatchIdBySummonerName(name: String): MutableList<String>
+    = query.select(match.matchId)
+        .from(match)
+        .innerJoin(match.summoner, summoner)
+        .where(summoner.name.eq(name))
+        .fetch()
 
     override fun findMatchesByMatchIds(matchId: String): MatchResponse? {
 
@@ -138,7 +137,7 @@ class MatchCustomRepositoryImpl(
                 match.champion.championName,
                 match.champion.championId,
                 match.champion.championLevel,
-                )
+            )
         )
             .from(match)
             .where(match.matchId.`in`(matchIds), summoner.name.eq(name))

@@ -47,16 +47,12 @@ dependencies {
 	implementation("com.querydsl:querydsl-jpa:$querydslVersion")
 	kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
 
-	// ** security ** //
-//	implementation("org.springframework.boot:spring-boot-starter-security")
-
 	// cache, redis
-	implementation("org.springframework.boot:spring-boot-starter-cache")
+//	implementation("org.springframework.boot:spring-boot-starter-cache")
 
 	// ** test ** //
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
-//	testImplementation("org.springframework.security:spring-security-test")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {

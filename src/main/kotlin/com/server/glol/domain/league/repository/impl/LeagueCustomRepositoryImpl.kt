@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository
 class LeagueCustomRepositoryImpl(
     private val query: JPAQueryFactory
 ) : LeagueCustomRepository {
-    override fun getLeagueEntryByName(name: String): MutableSet<LeagueDto> {
-        return query.select(
+    override fun getLeagueEntryByName(name: String): MutableSet<LeagueDto>
+    = query.select(
             QLeagueDto(
                 league.leagueId,
                 league.queueType,
@@ -31,12 +31,10 @@ class LeagueCustomRepositoryImpl(
             .where(league.summoner.name.eq(name))
             .from(league)
             .fetch().toMutableSet()
-    }
 
-    override fun getLeague(name: String, queueType: String): League? {
-        return query.selectFrom(league)
+    override fun getLeague(name: String, queueType: String)
+    = query.selectFrom(league)
             .innerJoin(league.summoner, summoner)
             .where(summoner.name.eq(name), league.queueType.eq(queueType))
             .fetchOne()
-    }
 }

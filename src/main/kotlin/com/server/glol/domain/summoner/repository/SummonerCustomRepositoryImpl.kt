@@ -24,17 +24,15 @@ class SummonerCustomRepositoryImpl(private val query: JPAQueryFactory) : Summone
             .fetchOne()
     }
 
-    override fun findPuuidByName(name: String): String? {
-        return query.select(summoner.puuid)
+    override fun findPuuidByName(name: String): String?
+        = query.select(summoner.puuid)
             .where(summoner.name.eq(name))
             .from(summoner)
             .fetchOne()
-    }
 
-    override fun findIdByName(name: String): String? {
-        return query.select(summoner.id)
+    override fun findIdByName(name: String): String?
+        = query.select(summoner.id)
             .where(summoner.name.eq(name))
             .from(summoner)
             .fetchOne()
-    }
 }

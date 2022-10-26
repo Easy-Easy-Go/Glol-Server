@@ -183,15 +183,14 @@ class MatchServiceImpl(
             ?: summonerRepository.findSummonerByName(BannedAccountConfig.name)!!
     }
 
-    private fun getId(name: String): String {
-        return summonerCustomRepository.findIdByName(name)
+    private fun getId(name: String): String
+        = summonerCustomRepository.findIdByName(name)
             ?: summonerServiceFacade.getSummoner(name).id
-    }
 
-    private fun getPuuid(name: String): String {
-        return summonerCustomRepository.findPuuidByName(name)
+
+    private fun getPuuid(name: String): String
+        = summonerCustomRepository.findPuuidByName(name)
             ?: summonerServiceFacade.getPuuid(name)
-    }
 
     private fun getMatchesDetail(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
         val matchList: MutableList<MatchDto> = mutableListOf()

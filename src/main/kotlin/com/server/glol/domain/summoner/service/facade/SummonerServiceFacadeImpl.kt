@@ -14,10 +14,10 @@ import java.nio.charset.StandardCharsets
 class SummonerServiceFacadeImpl(
     private val riotProperties: RiotProperties,
     private val summonerCustomRepository: SummonerCustomRepository,
-): SummonerServiceFacade {
+) : SummonerServiceFacade {
 
-    override fun getPuuid(name: String): String {
-        return WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
+    override fun getPuuid(name: String): String =
+        WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
             it.contentType = MediaType.APPLICATION_JSON
             it.acceptCharset = listOf(StandardCharsets.UTF_8)
             it.set("X-Riot-Token", riotProperties.secretKey)
@@ -25,10 +25,9 @@ class SummonerServiceFacadeImpl(
         }.retrieve().bodyToMono(String().javaClass)
             .onErrorReturn(summonerCustomRepository.findPuuidByName(BannedAccountConfig.name)!!).block()
             ?: throw IllegalArgumentException("Not Found Summoner")
-    }
 
-    override fun getSummoner(name: String): SummonerVo {
-        val summonerVo = WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
+    override fun getSummoner(name: String): SummonerVo =
+        WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
             it.contentType = MediaType.APPLICATION_JSON
             it.acceptCharset = listOf(StandardCharsets.UTF_8)
             it.set("X-Riot-Token", riotProperties.secretKey)
@@ -36,6 +35,4 @@ class SummonerServiceFacadeImpl(
         }.retrieve().bodyToMono(SummonerVo().javaClass)
             .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()!!
 
-        return summonerVo
-    }
 }
