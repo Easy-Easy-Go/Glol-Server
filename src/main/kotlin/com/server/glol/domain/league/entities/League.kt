@@ -1,5 +1,6 @@
 package com.server.glol.domain.league.entities
 
+import com.server.glol.domain.league.dto.LeagueEntryDTO
 import com.server.glol.domain.summoner.entities.Summoner
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
@@ -9,25 +10,25 @@ import javax.persistence.*
 @Entity
 class League(
     @Column(name = "queue_type")
-    val queueType: String,
+    var queueType: String = "",
 
     @Column(name = "tier")
-    val tier: String,
+    var tier: String = "",
 
     @Column(name = "rank")
-    val rank: String,
+    var rank: String = "",
 
     @Column(name = "league_points")
-    val leaguePoints: Int,
+    var leaguePoints: Int = 0,
 
     @Column(name = "wins")
-    val wins: Int,
+    var wins: Int = 0,
 
     @Column(name = "losses")
-    val losses: Int,
+    var losses: Int = 0,
 
-    @Column(name = "league_id")
-    val leagueId: String,
+    @Column(name = "league_id", unique = true)
+    var leagueId: String = "",
 
     @ManyToOne(
         cascade = [CascadeType.REMOVE],
@@ -35,11 +36,22 @@ class League(
         optional = true
     )
     @JoinColumn(name = "summoner_idx")
-    val summoner: Summoner? = null
+    var summoner: Summoner? = null
 ) {
 
     @Column(name = "league_idx")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long = 0
+
+    fun leagueUpdate(leagueDto: LeagueEntryDTO, summoner: Summoner) {
+        this.leagueId = leagueDto.leagueId
+        this.leaguePoints = leagueDto.leaguePoints
+        this.losses = leagueDto.losses
+        this.rank = leagueDto.rank
+        this.tier = leagueDto.tier
+        this.wins = leagueDto.wins
+        this.queueType = leagueDto.queueType
+        this.summoner = summoner
+    }
 }
