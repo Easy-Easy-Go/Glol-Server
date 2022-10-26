@@ -1,5 +1,7 @@
 package com.server.glol.domain.match.service.impl
 
+import com.server.glol.domain.league.service.LeagueService
+import com.server.glol.domain.league.service.facade.LeagueServiceFacade
 import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.projection.AllMatchVo
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
@@ -32,6 +34,8 @@ class MatchServiceImpl(
     private val summonerServiceFacade: SummonerServiceFacade,
     private val summonerService: SummonerService,
     private val matchServiceFacade: MatchServiceFacade,
+    private val leagueService: LeagueService,
+    private val leagueServiceFacade: LeagueServiceFacade
 ) : MatchService {
 
     @Transactional
@@ -44,6 +48,8 @@ class MatchServiceImpl(
         val matches = getMatchesDetail(matchIds)
 
         matchesSave(matches)
+
+        leagueService.saveLeague(name, leagueServiceFacade.getLeague(getId(name)))
     }
 
     override fun getMatch(matchId: String): MatchResponse {
