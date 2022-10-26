@@ -34,8 +34,7 @@ class SummonerServiceFacadeImpl(
             it.set("X-Riot-Token", riotProperties.secretKey)
             it.set("Origin", riotProperties.origin)
         }.retrieve().bodyToMono(SummonerVo().javaClass)
-            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()
-            ?: throw IllegalArgumentException("Not Found Summoner")
+            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()!!
 
         return summonerVo
     }

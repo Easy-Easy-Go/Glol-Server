@@ -2,7 +2,7 @@ package com.server.glol.domain.league.service.facade.impl
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.server.glol.domain.league.dto.LeagueEntryDTO
+import com.server.glol.domain.league.dto.LeagueDto
 import com.server.glol.domain.league.service.facade.LeagueServiceFacade
 import com.server.glol.global.config.properties.RiotProperties
 import org.springframework.http.MediaType
@@ -15,8 +15,8 @@ class LeagueServiceFacadeImpl(
     private val riotProperties: RiotProperties,
 
     ) : LeagueServiceFacade {
-    override fun getLeague(summonerAccount: String): MutableSet<LeagueEntryDTO> {
-        val leagueEntryDto: MutableSet<LeagueEntryDTO> = mutableSetOf()
+    override fun getLeague(summonerAccount: String): MutableSet<LeagueDto> {
+        val leagueEntryDto: MutableSet<LeagueDto> = mutableSetOf()
 
         val mapper = ObjectMapper()
         return mapper.convertValue(
@@ -27,7 +27,7 @@ class LeagueServiceFacadeImpl(
                     httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
                     httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
                     httpHeaders.set("Origin", riotProperties.origin)
-                }.retrieve().bodyToMono(leagueEntryDto::class.java).block()!!,
-            object : TypeReference<MutableSet<LeagueEntryDTO>>() {})
+                }.retrieve().bodyToMono(leagueEntryDto::class.java).block(),
+            object : TypeReference<MutableSet<LeagueDto>>() {})
     }
 }
