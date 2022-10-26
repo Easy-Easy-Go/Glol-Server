@@ -1,36 +1,36 @@
 package com.server.glol.domain.match.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import javax.persistence.*
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
 @Entity
 @Table(name = "item")
 class Item(
 
-        @Column(name = "item0")
+    @Column(name = "item0")
         val item0: Int,
 
-        @Column(name = "item1")
+    @Column(name = "item1")
         val item1: Int,
 
-        @Column(name = "item2")
+    @Column(name = "item2")
         val item2: Int,
 
-        @Column(name = "item3")
+    @Column(name = "item3")
         val item3: Int,
 
-        @Column(name = "item4")
+    @Column(name = "item4")
         val item4: Int,
 
-        @Column(name = "item5")
+    @Column(name = "item5")
         val item5: Int,
 
-        @Column(name = "item6")
+    @Column(name = "item6")
         val item6: Int,
 
-        @JsonIgnore
         @OneToOne(
             fetch = FetchType.LAZY,
             orphanRemoval = true,
