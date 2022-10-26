@@ -1,6 +1,6 @@
 package com.server.glol.domain.league.entities
 
-import com.server.glol.domain.league.dto.LeagueEntryDTO
+import com.server.glol.domain.league.dto.LeagueDto
 import com.server.glol.domain.summoner.entities.Summoner
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
@@ -44,7 +44,7 @@ class League(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long = 0
 
-    fun leagueUpdate(leagueDto: LeagueEntryDTO, summoner: Summoner) {
+    fun leagueUpdate(leagueDto: LeagueDto, summoner: Summoner) {
         this.leagueId = leagueDto.leagueId
         this.leaguePoints = leagueDto.leaguePoints
         this.losses = leagueDto.losses
