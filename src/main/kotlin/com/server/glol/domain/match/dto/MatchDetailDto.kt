@@ -27,6 +27,4 @@ data class MatchDetailDto(
     val championLevel: Int,
     val name: String,
     val summoner1Id: Int,
-    val summoner2Id: Int,
-)  {
-}
+    val summoner2Id: Int
