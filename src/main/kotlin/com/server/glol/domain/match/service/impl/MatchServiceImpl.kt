@@ -177,6 +177,11 @@ class MatchServiceImpl(
             ?: summonerRepository.findSummonerByName(BannedAccountConfig.name)!!
     }
 
+    private fun getId(name: String): String {
+        return summonerCustomRepository.findIdByName(name)
+            ?: summonerServiceFacade.getSummoner(name).id
+    }
+
     private fun getPuuid(name: String): String {
         return summonerCustomRepository.findPuuidByName(name)
             ?: summonerServiceFacade.getPuuid(name)

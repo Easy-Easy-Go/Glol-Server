@@ -30,4 +30,11 @@ class SummonerCustomRepositoryImpl(private val query: JPAQueryFactory) : Summone
             .from(summoner)
             .fetchOne()
     }
+
+    override fun findIdByName(name: String): String? {
+        return query.select(summoner.id)
+            .where(summoner.name.eq(name))
+            .from(summoner)
+            .fetchOne()
+    }
 }
