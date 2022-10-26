@@ -24,7 +24,7 @@ class Summoner(
     val visited: Boolean = false
 ) {
     @Id
-    @Column(name = "idx")
+    @Column(name = "summoner_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long? = null
 
