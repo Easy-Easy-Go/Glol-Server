@@ -2,7 +2,7 @@ package com.server.glol.domain.summoner.service.facade
 
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerVo
-import com.server.glol.domain.summoner.service.SummonerServiceFacade
+import com.server.glol.domain.summoner.service.RemoteSummonerServiceFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.config.properties.RiotProperties
 import org.springframework.stereotype.Service
@@ -11,10 +11,10 @@ import org.springframework.http.MediaType
 import java.nio.charset.StandardCharsets
 
 @Service
-class SummonerServiceFacadeImpl(
+class RemoteRemoteSummonerServiceFacadeImpl(
     private val riotProperties: RiotProperties,
     private val summonerCustomRepository: SummonerCustomRepository,
-) : SummonerServiceFacade {
+) : RemoteSummonerServiceFacade {
 
     override fun getPuuid(name: String): String =
         WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {

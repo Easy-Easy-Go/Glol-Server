@@ -1,7 +1,7 @@
 package com.server.glol.domain.match.service.impl
 
 import com.server.glol.domain.league.service.LeagueService
-import com.server.glol.domain.league.service.facade.LeagueServiceFacade
+import com.server.glol.domain.league.service.facade.RemoteLeagueServiceFacade
 import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.projection.AllMatchVo
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
@@ -15,7 +15,7 @@ import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.service.SummonerService
-import com.server.glol.domain.summoner.service.SummonerServiceFacade
+import com.server.glol.domain.summoner.service.RemoteSummonerServiceFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -31,11 +31,11 @@ class MatchServiceImpl(
     private val matchRepository: MatchRepository,
     private val itemsRepository: ItemRepository,
     private val championRepository: ChampionRepository,
-    private val summonerServiceFacade: SummonerServiceFacade,
+    private val remoteSummonerServiceFacade: RemoteSummonerServiceFacade,
     private val summonerService: SummonerService,
     private val matchServiceFacade: MatchServiceFacade,
     private val leagueService: LeagueService,
-    private val leagueServiceFacade: LeagueServiceFacade
+    private val remoteLeagueServiceFacade: RemoteLeagueServiceFacade
 ) : MatchService {
 
     @Transactional
@@ -49,7 +49,7 @@ class MatchServiceImpl(
 
         matchesSave(matches)
 
-        leagueService.saveLeague(name, leagueServiceFacade.getLeague(getId(name)))
+        leagueService.saveLeague(name, remoteLeagueServiceFacade.getLeague(getId(name)))
     }
 
     override fun getMatch(matchId: String): MatchResponse {
@@ -185,12 +185,12 @@ class MatchServiceImpl(
 
     private fun getId(name: String): String
         = summonerCustomRepository.findIdByName(name)
-            ?: summonerServiceFacade.getSummoner(name).id
+            ?: remoteSummonerServiceFacade.getSummoner(name).id
 
 
     private fun getPuuid(name: String): String
         = summonerCustomRepository.findPuuidByName(name)
-            ?: summonerServiceFacade.getPuuid(name)
+            ?: remoteSummonerServiceFacade.getPuuid(name)
 
     private fun getMatchesDetail(matchIdList: MutableList<String>): MutableList<MatchDetailDto> {
         val matchList: MutableList<MatchDto> = mutableListOf()
