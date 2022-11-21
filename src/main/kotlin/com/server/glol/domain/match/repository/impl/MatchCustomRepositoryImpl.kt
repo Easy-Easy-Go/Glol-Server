@@ -1,11 +1,14 @@
-package com.server.glol.domain.match.repository
+package com.server.glol.domain.match.repository.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.server.glol.domain.match.dto.*
+import com.server.glol.domain.match.dto.MatchInfoDto
+import com.server.glol.domain.match.dto.MatchResponse
+import com.server.glol.domain.match.dto.MetadataDto
 import com.server.glol.domain.match.dto.projection.*
 import com.server.glol.domain.match.entities.QChampion.champion
 import com.server.glol.domain.match.entities.QItem.item
 import com.server.glol.domain.match.entities.QMatch.match
+import com.server.glol.domain.match.repository.MatchCustomRepository
 import com.server.glol.domain.summoner.entities.QSummoner.summoner
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -74,11 +77,11 @@ class MatchCustomRepositoryImpl(
             .where(match.matchId.eq(matchId))
             .fetchOne()!!
 
-        val matchInfoDto: MutableList<MatchInfoTo> = mutableListOf()
+        val matchInfoDto: MutableList<MatchInfoDto> = mutableListOf()
 
         matchDao!!.forEachIndexed { index, match ->
             matchInfoDto.add(
-                MatchInfoTo(
+                MatchInfoDto(
                     match.totalMinionsKilled,
                     match.kills,
                     match.assists,
@@ -107,7 +110,7 @@ class MatchCustomRepositoryImpl(
             )
         }
 
-        return MatchResponse(MetadataTo(metadataTo.matchId, metadataTo.queueId, metadataTo.gameDuration), matchInfoDto)
+        return MatchResponse(MetadataDto(metadataTo.matchId, metadataTo.queueId, metadataTo.gameDuration), matchInfoDto)
     }
 
     override fun findAllByMatchIds(name: String, matchIds: MutableList<String>, pageable: Pageable): Page<AllMatchVo> {

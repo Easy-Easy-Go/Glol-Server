@@ -11,6 +11,9 @@ class RiotProperties(
         @Value("\${riot.summoner.name.url}")
         val summonerAPIUrl: String,
 
+        @Value("\${riot.summoner.puuid.url}")
+        val summonerByPuuidAPIURL: String,
+
         @Value("\${riot.match.matches.uuid.url}")
         val matchUUIDUrl: String,
 
