@@ -2,6 +2,7 @@ package com.server.glol.domain.match.entities
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.server.glol.domain.match.dto.MatchDetailDto
 import javax.persistence.*
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
@@ -27,7 +28,14 @@ class Champion(
 ) {
 
     @Column(name = "champion_idx")
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val championIdx: Long = 0
 
+    constructor(matchDetailDto: MatchDetailDto, match: Match) : this(
+        matchDetailDto.championName,
+        matchDetailDto.championId,
+        matchDetailDto.championLevel,
+        match
+    )
 }

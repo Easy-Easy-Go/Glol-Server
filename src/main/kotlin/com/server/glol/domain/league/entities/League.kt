@@ -54,4 +54,15 @@ class League(
         this.queueType = leagueDto.queueType
         this.summoner = summoner
     }
+
+    constructor(leagueDto: LeagueDto, summoner: Summoner) : this(
+        queueType = leagueDto.queueType,
+        tier = leagueDto.tier,
+        rank = leagueDto.rank,
+        leaguePoints = leagueDto.leaguePoints,
+        wins = leagueDto.wins,
+        losses = leagueDto.losses,
+        leagueId = leagueDto.leagueId,
+        summoner = summoner
+    )
 }

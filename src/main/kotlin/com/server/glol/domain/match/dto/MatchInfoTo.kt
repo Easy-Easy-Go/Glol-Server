@@ -1,5 +1,7 @@
 package com.server.glol.domain.match.dto
 
+import com.server.glol.domain.match.dto.riot.matchv5.ParticipantDto
+
 data class MatchInfoTo(
     val totalMinionsKilled: Int,
     val kills: Int,
@@ -26,4 +28,30 @@ data class MatchInfoTo(
     val firstSummonerSpell: Int,
     val secondSummonerSpell: Int,
 ) {
+    constructor(dto: ParticipantDto): this(
+        dto.totalMinionsKilled,
+        dto.kills,
+        dto.assists,
+        dto.deaths,
+        dto.teamPosition,
+        dto.teamId,
+        dto.win,
+        dto.wardsPlaced,
+        dto.wardsKilled,
+        dto.wardsPlaced,
+        dto.totalDamageDealtToChampions,
+        dto.item0,
+        dto.item1,
+        dto.item2,
+        dto.item3,
+        dto.item4,
+        dto.item5,
+        dto.item6,
+        dto.championName,
+        dto.championId,
+        dto.champLevel,
+        dto.summonerName,
+        dto.summoner1Id,
+        dto.summoner2Id,
+    )
 }
