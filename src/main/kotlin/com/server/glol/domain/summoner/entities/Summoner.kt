@@ -1,4 +1,4 @@
-package com.server.glol.domain.summoner.entites
+package com.server.glol.domain.summoner.entities
 
 import javax.persistence.*
 
@@ -24,7 +24,7 @@ class Summoner(
     val visited: Boolean = false
 ) {
     @Id
-    @Column(name = "idx")
+    @Column(name = "summoner_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val idx: Long? = null
 

@@ -17,6 +17,9 @@ class RiotProperties(
         @Value("\${riot.match.matches.matchId.url}")
         val matchesMatchIdUrl: String,
 
+        @Value("\${riot.league.url}")
+        val leagueSummonerAccountUrl: String,
+
         @Value("\${riot.origin}")
         val origin: String
 ) {

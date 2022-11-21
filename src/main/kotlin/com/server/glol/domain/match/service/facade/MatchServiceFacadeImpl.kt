@@ -28,13 +28,12 @@ class MatchServiceFacadeImpl(
             ?: throw IllegalArgumentException("Not Exists Matches")
     }
 
-    override fun getMatch(matchId: String): MatchDto {
-        return WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers { httpHeaders ->
+    override fun getMatch(matchId: String): MatchDto
+        = WebClient.create().get().uri(riotProperties.matchesMatchIdUrl + matchId).headers { httpHeaders ->
             httpHeaders.contentType = MediaType.APPLICATION_JSON
             httpHeaders.acceptCharset = listOf(StandardCharsets.UTF_8)
             httpHeaders.set("X-Riot-Token", riotProperties.secretKey)
             httpHeaders.set("Origin", riotProperties.origin)
         }.retrieve().bodyToMono(MatchDto().javaClass).block()
             ?: throw IllegalArgumentException("Not Exists Match")
-    }
 }

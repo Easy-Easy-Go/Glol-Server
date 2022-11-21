@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class SummonerController(private val summonerService: SummonerService) {
 
     @GetMapping("/registration/{name}")
-    fun registrationSummoner(@PathVariable name: String) {
-        summonerService.registerSummoner(name)
-    }
+    fun registrationSummoner(@PathVariable name: String)
+        = summonerService.registerSummoner(name)
 
 }
