@@ -1,38 +1,36 @@
 package com.server.glol.domain.summoner.service.facade
 
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
-import com.server.glol.domain.summoner.repository.projection.SummonerVo
+import com.server.glol.domain.summoner.repository.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerServiceFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.config.properties.RiotProperties
+import com.server.glol.global.exception.CustomException
+import com.server.glol.global.exception.ErrorCode
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.http.MediaType
-import java.nio.charset.StandardCharsets
 
 @Service
 class SummonerServiceFacadeImpl(
     private val riotProperties: RiotProperties,
     private val summonerCustomRepository: SummonerCustomRepository,
+    private val webClient: WebClient,
 ) : SummonerServiceFacade {
 
-    override fun getPuuid(name: String): String =
-        WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
-            it.contentType = MediaType.APPLICATION_JSON
-            it.acceptCharset = listOf(StandardCharsets.UTF_8)
-            it.set("X-Riot-Token", riotProperties.secretKey)
-            it.set("Origin", riotProperties.origin)
-        }.retrieve().bodyToMono(String().javaClass)
-            .onErrorReturn(summonerCustomRepository.findPuuidByName(BannedAccountConfig.name)!!).block()
-            ?: throw IllegalArgumentException("Not Found Summoner")
+    override fun getSummonerByName(name: String): SummonerDto {
+        return webClient.mutate().build()
+            .get().uri(riotProperties.summonerAPIUrl + name)
+            .retrieve()
+            .bodyToMono(SummonerDto().javaClass)
+            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()
+            ?: throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
+    }
 
-    override fun getSummoner(name: String): SummonerVo =
-        WebClient.create().get().uri(riotProperties.summonerAPIUrl + name).headers {
-            it.contentType = MediaType.APPLICATION_JSON
-            it.acceptCharset = listOf(StandardCharsets.UTF_8)
-            it.set("X-Riot-Token", riotProperties.secretKey)
-            it.set("Origin", riotProperties.origin)
-        }.retrieve().bodyToMono(SummonerVo().javaClass)
-            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()!!
-
+    override fun getSummonerByPuuid(puuid: String): SummonerDto {
+        return webClient.mutate().build()
+            .get().uri(riotProperties.summonerByPuuidAPIURL + puuid)
+            .retrieve()
+            .bodyToMono(SummonerDto().javaClass).block()
+            ?: throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
+    }
 }

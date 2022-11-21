@@ -1,8 +1,8 @@
 package com.server.glol.domain.summoner.service
 
-import com.server.glol.domain.summoner.repository.projection.SummonerVo
+import com.server.glol.domain.summoner.repository.projection.SummonerDto
 
 interface SummonerServiceFacade {
-    fun getPuuid(name: String): String
-    fun getSummoner(name: String): SummonerVo
+    fun getSummonerByName(name: String): SummonerDto
+    fun getSummonerByPuuid(puuid: String): SummonerDto
 }
