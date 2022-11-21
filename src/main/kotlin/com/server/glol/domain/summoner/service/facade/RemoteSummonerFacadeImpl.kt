@@ -2,7 +2,7 @@ package com.server.glol.domain.summoner.service.facade
 
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
-import com.server.glol.domain.summoner.service.SummonerServiceFacade
+import com.server.glol.domain.summoner.service.RemoteSummonerFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.config.properties.RiotProperties
 import com.server.glol.global.exception.CustomException
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
 @Service
-class SummonerServiceFacadeImpl(
+class RemoteSummonerFacadeImpl(
     private val riotProperties: RiotProperties,
     private val summonerCustomRepository: SummonerCustomRepository,
     private val webClient: WebClient,
-) : SummonerServiceFacade {
+) : RemoteSummonerFacade {
 
     override fun getSummonerByName(name: String): SummonerDto {
         return webClient.mutate().build()

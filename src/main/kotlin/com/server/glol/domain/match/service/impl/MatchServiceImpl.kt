@@ -16,7 +16,7 @@ import com.server.glol.domain.match.service.MatchServiceFacade
 import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.service.SummonerServiceFacade
+import com.server.glol.domain.summoner.service.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode
 import kotlinx.coroutines.Dispatchers
@@ -34,11 +34,11 @@ class MatchServiceImpl(
     private val summonerCustomRepository: SummonerCustomRepository,
     private val matchCustomRepository: MatchCustomRepository,
     private val matchRepository: MatchRepository,
-    private val summonerServiceFacade: SummonerServiceFacade,
-    private val matchServiceFacade: MatchServiceFacade,
-    private val leagueService: LeagueService,
     private val itemRepository: ItemRepository,
+    private val matchServiceFacade: MatchServiceFacade,
     private val championRepository: ChampionRepository,
+    private val leagueService: LeagueService,
+    private val remoteSummonerFacade: RemoteSummonerFacade,
 ) : MatchService {
 
     @Transactional
@@ -126,7 +126,7 @@ class MatchServiceImpl(
                 summonerRepository.existsSummonerByPuuid(puuid)
             }.map { puuid ->
                 async(Dispatchers.IO) {
-                    summonerServiceFacade.getSummonerByPuuid(puuid)
+                    remoteSummonerFacade.getSummonerByPuuid(puuid)
                 }
             }.awaitAll().map { summoner ->
                 async(Dispatchers.IO) {
@@ -135,9 +135,14 @@ class MatchServiceImpl(
             }.awaitAll().toMutableList()
         }
     }
+    private fun getId(name: String): String
+        = summonerCustomRepository.findIdByName(name)
+            ?: remoteSummonerFacade.getSummonerByName(name).id
 
-    private fun getPuuid(name: String): String =
-        summonerCustomRepository.findPuuidByName(name) ?: summonerServiceFacade.getSummonerByName(name).puuid
+
+    private fun getPuuid(name: String): String
+        = summonerCustomRepository.findPuuidByName(name)
+            ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
 
     private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> {
         return toMatchDetailDto(matchIds.map { matchId ->
