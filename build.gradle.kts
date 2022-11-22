@@ -57,6 +57,7 @@ dependencies {
     // ** test ** //
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("io.mockk:mockk")
 }
 
 sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {

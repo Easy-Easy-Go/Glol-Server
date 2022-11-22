@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
 @Service
-class RemoteRemoteMatchServiceFacadeImpl(
+class
+RemoteMatchServiceFacadeImpl(
     private val riotProperties: RiotProperties,
     private val webClient: WebClient,
 ) : RemoteMatchServiceFacade {
