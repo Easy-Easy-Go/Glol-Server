@@ -1,4 +1,4 @@
-package com.server.glol.domain.summoner.service
+package com.server.glol.domain.summoner.service.facade
 
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
 

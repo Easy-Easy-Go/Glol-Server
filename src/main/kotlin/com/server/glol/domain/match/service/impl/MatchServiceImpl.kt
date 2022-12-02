@@ -14,9 +14,9 @@ import com.server.glol.domain.match.repository.MatchRepository
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.MatchServiceFacade
 import com.server.glol.domain.summoner.entities.Summoner
-import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.service.RemoteSummonerFacade
+import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
+import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MatchServiceImpl(
     private val summonerRepository: SummonerRepository,
-    private val summonerCustomRepository: SummonerCustomRepository,
+    private val summonerService: SummonerService,
     private val matchCustomRepository: MatchCustomRepository,
     private val matchRepository: MatchRepository,
     private val itemRepository: ItemRepository,
@@ -43,10 +43,10 @@ class MatchServiceImpl(
 
     @Transactional
     override fun renewalMatches(name: String, matchPageable: MatchPageable) {
-        if(!summonerRepository.existsSummonerByName(name))
+        if (!summonerRepository.existsSummonerByName(name))
             throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
 
-        val puuid = getPuuid(name)
+        val puuid = summonerService.getPuuid(name)
 
         val matchIds = matchServiceFacade.getMatchIds(puuid, matchPageable)
             .filterNot {
@@ -82,7 +82,7 @@ class MatchServiceImpl(
         val matchIds = matchCustomRepository.findMatchIdBySummonerName(name)
 
         if (matchIds.isEmpty()) {
-            return matchServiceFacade.getMatchIds(getPuuid(name), renewalMatchesDto)
+            return matchServiceFacade.getMatchIds(summonerService.getPuuid(name), renewalMatchesDto)
         }
         return matchIds
     }
@@ -104,19 +104,14 @@ class MatchServiceImpl(
     }
 
     private fun matchesSave(matches: MutableList<MatchDetailDto>) {
-        runBlocking {
-            matches.forEach { matchDetail ->
-                notExistsSummonerSave(matchDetail)
+        matches.forEach { matchDetail ->
+            notExistsSummonerSave(matchDetail)
 
-                val summoner = async(Dispatchers.IO) {
-                    summonerRepository.findSummonerByName(matchDetail.name)
-                }
+            val summoner = summonerRepository.findSummonerByName(matchDetail.name)
+            val match = matchRepository.save(Match(matchDetail, summoner))
 
-                val match = matchRepository.save(Match(matchDetail, summoner.await()))
-
-                itemRepository.save(Item(matchDetail, match))
-                championRepository.save(Champion(matchDetail, match))
-            }
+            itemRepository.save(Item(matchDetail, match))
+            championRepository.save(Champion(matchDetail, match))
         }
     }
 
@@ -135,14 +130,6 @@ class MatchServiceImpl(
             }.awaitAll().toMutableList()
         }
     }
-    private fun getId(name: String): String
-        = summonerCustomRepository.findIdByName(name)
-            ?: remoteSummonerFacade.getSummonerByName(name).id
-
-
-    private fun getPuuid(name: String): String
-        = summonerCustomRepository.findPuuidByName(name)
-            ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
 
     private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> {
         return toMatchDetailDto(matchIds.map { matchId ->

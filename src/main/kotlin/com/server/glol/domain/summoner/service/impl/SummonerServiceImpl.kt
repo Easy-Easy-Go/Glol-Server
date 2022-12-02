@@ -1,9 +1,10 @@
 package com.server.glol.domain.summoner.service.impl
 
 import com.server.glol.domain.summoner.entities.Summoner
+import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
-import com.server.glol.domain.summoner.service.RemoteSummonerFacade
+import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.exception.CustomException
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service
 class SummonerServiceImpl(
     private val summonerRepository: SummonerRepository,
     private val remoteSummonerFacade: RemoteSummonerFacade,
+    private val summonerCustomRepository: SummonerCustomRepository,
 ) : SummonerService {
 
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -30,6 +32,10 @@ class SummonerServiceImpl(
 
         saveByName(summoner)
     }
+
+    override fun getPuuid(name: String): String
+            = summonerCustomRepository.findPuuidByName(name)
+        ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
 
     private fun saveByName(summoner: SummonerDto) {
         if (summoner.name != BannedAccountConfig.name)

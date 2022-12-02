@@ -2,7 +2,6 @@ package com.server.glol.domain.summoner.service.facade
 
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
-import com.server.glol.domain.summoner.service.RemoteSummonerFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.config.properties.RiotProperties
 import com.server.glol.global.exception.CustomException
