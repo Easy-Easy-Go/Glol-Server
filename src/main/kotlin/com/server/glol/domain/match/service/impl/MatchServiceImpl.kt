@@ -2,7 +2,7 @@ package com.server.glol.domain.match.service.impl
 
 import com.server.glol.domain.league.service.LeagueService
 import com.server.glol.domain.match.dto.*
-import com.server.glol.domain.match.dto.projection.AllMatchVo
+import com.server.glol.domain.match.dto.projection.AllMatchDto
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
 import com.server.glol.domain.match.entities.Champion
 import com.server.glol.domain.match.entities.Item
@@ -68,7 +68,7 @@ class MatchServiceImpl(
         return matchCustomRepository.findMatchesByMatchIds(matchId)!!
     }
 
-    override fun getMatches(name: String, matchPageable: MatchPageable, pageable: Pageable): Page<AllMatchVo> {
+    override fun getMatches(name: String, matchPageable: MatchPageable, pageable: Pageable): Page<AllMatchDto> {
         if (!summonerRepository.existsSummonerByName(name)) {
             throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
         }

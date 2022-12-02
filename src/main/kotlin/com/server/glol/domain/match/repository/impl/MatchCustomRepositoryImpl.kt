@@ -29,8 +29,8 @@ class MatchCustomRepositoryImpl(
 
     override fun findMatchesByMatchIds(matchId: String): MatchResponse? {
 
-        val matchDao: MutableList<MatchVo>? = query.select(
-            QMatchVo(
+        val matchDao: MutableList<MatchDto>? = query.select(
+            QMatchDto(
                 match.totalMinionsKilled,
                 match.kills,
                 match.assists,
@@ -65,8 +65,8 @@ class MatchCustomRepositoryImpl(
             .where(match.matchId.eq(matchId))
             .fetch()
 
-        val metadataTo: MetadataVo = query.select(
-            QMetadataVo(
+        val metadataTo: com.server.glol.domain.match.dto.projection.MetadataDto = query.select(
+            QMetadataDto(
                 match.matchId,
                 match.queueType,
                 match.gameDuration
@@ -113,10 +113,10 @@ class MatchCustomRepositoryImpl(
         return MatchResponse(MetadataDto(metadataTo.matchId, metadataTo.queueId, metadataTo.gameDuration), matchInfoDto)
     }
 
-    override fun findAllByMatchIds(name: String, matchIds: MutableList<String>, pageable: Pageable): Page<AllMatchVo> {
+    override fun findAllByMatchIds(name: String, matchIds: MutableList<String>, pageable: Pageable): Page<AllMatchDto> {
 
-        val matches: MutableList<AllMatchVo> = query.select(
-            QAllMatchVo(
+        val matches: MutableList<AllMatchDto> = query.select(
+            QAllMatchDto(
                 match.matchId,
                 match.gameDuration,
                 match.queueType,

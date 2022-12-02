@@ -2,20 +2,18 @@ package com.server.glol.domain.match.dto.projection
 
 import com.querydsl.core.annotations.QueryProjection
 
-data class AllMatchVo @QueryProjection constructor(
-    val matchId: String,
-    val gameDuration: Int,
-    val queueId: String,
+data class MatchDto @QueryProjection constructor(
     val totalMinionsKilled: Int,
     val kills: Int,
     val assists: Int,
     val deaths: Int,
+    val teamPosition: String,
+    val teamId: Int,
     val win: Boolean,
     val wardsPlaced: Int,
     val wardsKilled: Int,
     val controlWardsPlaced: Int,
-    val firstSummonerSpell: Int,
-    val secondSummonerSpell: Int,
+    val totalDamageDealtToChampions: Int,
     val item0: Int,
     val item1: Int,
     val item2: Int,
@@ -26,6 +24,7 @@ data class AllMatchVo @QueryProjection constructor(
     val championName: String,
     val championId: Int,
     val championLevel: Int,
-    ) {
-
-}
+    val name: String,
+    val firstSummonerSpell: Int,
+    val secondSummonerSpell: Int,
+)
