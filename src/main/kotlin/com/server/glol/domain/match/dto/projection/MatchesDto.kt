@@ -2,7 +2,7 @@ package com.server.glol.domain.match.dto.projection
 
 import com.querydsl.core.annotations.QueryProjection
 
-data class AllMatchDto @QueryProjection constructor(
+data class MatchesDto @QueryProjection constructor(
     val matchId: String = "",
     val gameDuration: Int = 0,
     val queueId: String = "",
