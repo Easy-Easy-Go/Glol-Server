@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
     kotlin("kapt") version "1.7.10"
-    id("jacoco")
 }
 
 group = "com.server"
@@ -57,11 +56,13 @@ dependencies {
     // ** test ** //
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("io.mockk:mockk")
-}
 
-sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
-    kotlin.srcDir("$buildDir/generated/source/kapt/main")
+    // ** mockk ** //
+    testImplementation("io.mockk:mockk:1.13.2")
+
+    // ** kotest ** //
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.5.4")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:5.5.4")
 }
 
 tasks.withType<KotlinCompile> {
@@ -73,22 +74,4 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-jacoco {
-    toolVersion = "0.8.7"
-
-}
-
-tasks.withType<JacocoReport> {
-    reports {
-        xml.required.set(false)
-        csv.required.set(false)
-        html.required.set(true)
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
 }
