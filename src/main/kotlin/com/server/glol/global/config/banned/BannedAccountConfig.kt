@@ -14,14 +14,11 @@ class BannedAccountConfig(private val summonerRepository: SummonerRepository) {
         const val accountId = "bannedAccountId"
         const val puuid = "bannedPuuid"
         const val profileIcon = 0
-        const val visited = true
     }
+
     @PostConstruct
     fun suspensionAccountSave() {
-
-
-        if (!summonerRepository.existsSummonerByName(name)) {
-            summonerRepository.save(Summoner(id, accountId, name, puuid, profileIcon, visited))
-        }
+        if (!summonerRepository.existsSummonerByName(name))
+            summonerRepository.save(Summoner(id, accountId, name, puuid, profileIcon))
     }
 }

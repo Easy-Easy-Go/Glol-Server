@@ -1,44 +1,38 @@
 package com.server.glol.domain.summoner.service.impl
 
 import com.server.glol.domain.summoner.entities.Summoner
-import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.service.RemoteSummonerFacade
 import com.server.glol.domain.summoner.service.SummonerService
-import com.server.glol.domain.summoner.service.RemoteSummonerServiceFacade
 import com.server.glol.global.config.banned.BannedAccountConfig
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import com.server.glol.global.exception.CustomException
+import com.server.glol.global.exception.ErrorCode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
 
 @Service
 class SummonerServiceImpl(
     private val summonerRepository: SummonerRepository,
-    private val summonerCustomRepository: SummonerCustomRepository,
-    private val remoteSummonerServiceFacade: RemoteSummonerServiceFacade,
+    private val remoteSummonerFacade: RemoteSummonerFacade,
 ) : SummonerService {
 
-    override fun registerSummoner(name: String) {
-        val summoner = summonerCustomRepository.findSummonerByName(name)
-            ?: remoteSummonerServiceFacade.getSummoner(name)
+    val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
-        save(summoner)
-    }
-
-    private fun save(summoner: SummonerVo?) {
-        if (summoner != null && !summoner.visited && summoner.name != BannedAccountConfig.name) {
-            summonerRepository.save(
-                Summoner(
-                    id = summoner.id,
-                    accountId = summoner.accountId,
-                    name = summoner.name,
-                    puuid = summoner.puuid,
-                    profileIconId = summoner.profileIconId,
-                    visited = true
-                )
-            )
+    override fun registerSummonerByName(name: String) {
+        if (summonerRepository.existsSummonerByName(name)) {
+            log.info(ErrorCode.ALREADY_EXISTS_SUMMONER.msg)
+            throw CustomException(ErrorCode.ALREADY_EXISTS_SUMMONER)
         }
+
+        val summoner = remoteSummonerFacade.getSummonerByName(name)
+
+        saveByName(summoner)
     }
 
+    private fun saveByName(summoner: SummonerDto) {
+        if (summoner.name != BannedAccountConfig.name)
+            summonerRepository.save(Summoner(summoner))
+    }
 }

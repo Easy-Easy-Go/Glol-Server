@@ -1,22 +1,22 @@
-package com.server.glol.domain.summoner.repository
+package com.server.glol.domain.summoner.repository.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.server.glol.domain.summoner.entities.QSummoner.summoner
-import com.server.glol.domain.summoner.repository.projection.QSummonerVo
-import com.server.glol.domain.summoner.repository.projection.SummonerVo
+import com.server.glol.domain.summoner.repository.SummonerCustomRepository
+import com.server.glol.domain.summoner.repository.projection.QSummonerDto
+import com.server.glol.domain.summoner.repository.projection.SummonerDto
 import org.springframework.stereotype.Repository
 
 @Repository
 class SummonerCustomRepositoryImpl(private val query: JPAQueryFactory) : SummonerCustomRepository {
-    override fun findSummonerByName(name: String): SummonerVo? {
+    override fun findSummonerByName(name: String): SummonerDto? {
         return query.select(
-            QSummonerVo(
+            QSummonerDto(
                 summoner.id,
                 summoner.accountId,
                 summoner.name,
                 summoner.puuid,
                 summoner.profileIconId,
-                summoner.visited
             )
         )
             .from(summoner)
