@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable
 class MatchServiceTest : DescribeSpec({
 
     describe("getMatch는") {
+
         context("DB에 존재하는 matchId를 받는 경우") {
             every { matchService.getMatch(MATCH_ID) } returns matchResponse
 
@@ -51,7 +52,7 @@ class MatchServiceTest : DescribeSpec({
             context("해당 matchId가 존재하지 않을 때") {
                 every { remoteMatch.getMatch(notExistsMatchId) } throws CustomException(NOT_FOUND_MATCH)
 
-                it("CustomException를 던진다") {
+                it("Not found match CustomException를 던진다") {
                     shouldThrow<CustomException> {
                         remoteMatch.getMatch(notExistsMatchId)
                     }
@@ -65,7 +66,6 @@ class MatchServiceTest : DescribeSpec({
         val pageable = Pageable.ofSize(1)
         val count = 5L
         val matchesDto: Page<MatchesDto> = PageImpl(mutableListOf(MatchesDto()), pageable, count)
-
 
         context("유효한 name, matchPageable을 받는 경우") {
 
@@ -94,6 +94,7 @@ class MatchServiceTest : DescribeSpec({
     }
 
     describe("renewalMatches가") {
+
         context("존재하는 name을 받는 경우") {
             every { matchService.renewalMatches(NAME, matchPageable) } just Runs
 

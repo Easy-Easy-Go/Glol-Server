@@ -15,6 +15,7 @@ import io.mockk.mockk
 class RemoteMatchTest : DescribeSpec({
 
     describe("getMatchIds는") {
+
         context("유효한 puuid와 matchPageable를 받는 경우") {
             every { remoteMatchFacade.getMatchIds(puuid, matchPageable) } returns matchIds
 
@@ -28,7 +29,7 @@ class RemoteMatchTest : DescribeSpec({
         context("유효하지 않은 인자를 받는 경우") {
             every { remoteMatchFacade.getMatchIds("", MatchPageable(0, 1)) } throws CustomException(NOT_FOUND_MATCH)
 
-            it("CustomException을 던진다") {
+            it("Not found match exception을 던진다") {
                 shouldThrow<CustomException> {
                     remoteMatchFacade.getMatchIds("", MatchPageable(0, 1))
                 }
@@ -37,6 +38,7 @@ class RemoteMatchTest : DescribeSpec({
     }
 
     describe("getMatch는") {
+
         context("유효한 matchId를 받는 경우") {
             every { remoteMatchFacade.getMatch(matchId) } returns match
 
@@ -50,7 +52,7 @@ class RemoteMatchTest : DescribeSpec({
         context("존재하지 않는 matchId를 받는 경우") {
             every { remoteMatchFacade.getMatch(notValidMatchId) } throws CustomException(NOT_FOUND_MATCH)
 
-            it("CustomException을 던진다") {
+            it("Not found match exception 던진다") {
                 shouldThrow<CustomException> {
                     remoteMatchFacade.getMatch(notValidMatchId)
                 }

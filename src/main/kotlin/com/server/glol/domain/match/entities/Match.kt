@@ -102,8 +102,4 @@ class Match(
         firstSummonerSpell = matchDetailDto.summoner1Id,
         secondSummonerSpell = matchDetailDto.summoner2Id
     )
-
-    fun updateSummoner(summoner: Summoner) {
-        this.summoner = summoner
-    }
 }
