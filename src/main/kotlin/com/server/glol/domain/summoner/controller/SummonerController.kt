@@ -12,6 +12,6 @@ class SummonerController(private val summonerService: SummonerService) {
 
     @GetMapping("/registration/{name}")
     fun registrationSummoner(@PathVariable name: String)
-        = summonerService.registerSummonerByName(name)
+        = summonerService.registerSummoner(name)
 
 }
