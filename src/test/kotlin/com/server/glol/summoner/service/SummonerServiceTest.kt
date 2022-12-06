@@ -1,4 +1,4 @@
-package com.server.glol.summoner
+package com.server.glol.summoner.service
 
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
@@ -41,12 +41,12 @@ class SummonerServiceTest: DescribeSpec({
     describe("getPuuid가") {
 
         context("DB에 name이 있을 경우") {
-            every { summonerService.getPuuid(NAME) } returns puuid
+            every { summonerService.getPuuid(NAME) } returns PUUID
 
             val getPuuid = summonerService.getPuuid(NAME)
 
             it("puuid를 반환한다") {
-                getPuuid shouldBe puuid
+                getPuuid shouldBe PUUID
             }
         }
 
@@ -74,11 +74,11 @@ class SummonerServiceTest: DescribeSpec({
 }) {
 
     companion object {
-        val puuid = "Cntz2MXELGgNAbLArhEpA-cQvhgNDcSGzDe2D4kouURrs0meLt2R4hR-oy1XZOrIUTReppExaFK8DA"
+        private const val PUUID = "Cntz2MXELGgNAbLArhEpA-cQvhgNDcSGzDe2D4kouURrs0meLt2R4hR-oy1XZOrIUTReppExaFK8DA"
         private const val NAME = "권선징악어부"
         private val summonerService = mockk<SummonerService>()
         private val summonerRepository = mockk<SummonerRepository>()
         private val remoteSummoner = mockk<RemoteSummonerFacade>()
-        private val summonerDto = SummonerDto(puuid = puuid)
+        private val summonerDto = SummonerDto(puuid = PUUID)
     }
 }
