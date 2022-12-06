@@ -23,13 +23,16 @@ RemoteMatchFacadeImpl(
             .get()
             .uri(riotProperties.matchUUIDUrl + puuid + "/ids?queue=" + matchPageable.queue + "&count=" + matchPageable.count)
             .retrieve()
-            .bodyToMono(matchIds::class.java).block()
-            ?: throw CustomException(ErrorCode.NOT_FOUND_MATCH)
+            .bodyToMono(matchIds::class.java)
+            .onErrorResume { throw CustomException(ErrorCode.NOT_FOUND_MATCH) }
+            .block()!!
     }
 
     override fun getMatch(matchId: String): MatchDto =
-        webClient.mutate().build().get().uri(riotProperties.matchesMatchIdUrl + matchId)
+        webClient.mutate().build()
+            .get().uri(riotProperties.matchesMatchIdUrl + matchId)
             .retrieve()
-            .bodyToMono(MatchDto().javaClass).block()
-            ?: throw CustomException(ErrorCode.NOT_FOUND_MATCH)
+            .bodyToMono(MatchDto().javaClass)
+            .onErrorResume { throw CustomException(ErrorCode.NOT_FOUND_MATCH) }
+            .block()!!
 }

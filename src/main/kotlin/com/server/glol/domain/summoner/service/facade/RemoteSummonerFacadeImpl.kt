@@ -4,8 +4,6 @@ import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
 import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.config.properties.RiotProperties
-import com.server.glol.global.exception.CustomException
-import com.server.glol.global.exception.ErrorCode
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -21,15 +19,14 @@ class RemoteSummonerFacadeImpl(
             .get().uri(riotProperties.summonerAPIUrl + name)
             .retrieve()
             .bodyToMono(SummonerDto().javaClass)
-            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()
-            ?: throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
+            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()!!
     }
 
     override fun getSummonerByPuuid(puuid: String): SummonerDto {
         return webClient.mutate().build()
             .get().uri(riotProperties.summonerByPuuidAPIURL + puuid)
             .retrieve()
-            .bodyToMono(SummonerDto().javaClass).block()
-            ?: throw CustomException(ErrorCode.NOT_FOUND_SUMMONER)
+            .bodyToMono(SummonerDto().javaClass)
+            .onErrorReturn(summonerCustomRepository.findSummonerByName(BannedAccountConfig.name)!!).block()!!
     }
 }

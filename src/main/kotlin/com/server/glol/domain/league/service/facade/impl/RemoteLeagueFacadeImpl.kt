@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.server.glol.domain.league.dto.LeagueDto
 import com.server.glol.domain.league.service.facade.RemoteLeagueFacade
 import com.server.glol.global.config.properties.RiotProperties
+import com.server.glol.global.exception.CustomException
+import com.server.glol.global.exception.ErrorCode.NOT_FOUND_LEAGUE
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -19,7 +21,9 @@ class RemoteLeagueFacadeImpl(
         val mapper = ObjectMapper()
         return mapper.convertValue(webClient.mutate().build()
             .get().uri(riotProperties.leagueSummonerAccountUrl + summonerAccount)
-            .retrieve().bodyToMono(leagueEntryDto::class.java).block(),
+            .retrieve().bodyToMono(leagueEntryDto::class.java).onErrorResume {
+                throw CustomException(NOT_FOUND_LEAGUE)
+            }.block(),
             object : TypeReference<MutableSet<LeagueDto>>() {})
     }
 }
