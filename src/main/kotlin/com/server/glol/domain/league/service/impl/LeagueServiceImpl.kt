@@ -7,7 +7,7 @@ import com.server.glol.domain.league.repository.LeagueRepository
 import com.server.glol.domain.league.service.LeagueService
 import com.server.glol.domain.league.service.facade.RemoteLeagueFacade
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.service.RemoteSummonerFacade
+import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
