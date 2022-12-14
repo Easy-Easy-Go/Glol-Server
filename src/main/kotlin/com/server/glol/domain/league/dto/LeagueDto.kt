@@ -1,10 +1,9 @@
 package com.server.glol.domain.league.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.querydsl.core.annotations.QueryProjection
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class LeagueDto @QueryProjection constructor(
+class LeagueDto(
     val leagueId: String = "",
     val queueType: String = "",
     val tier: String = "",
