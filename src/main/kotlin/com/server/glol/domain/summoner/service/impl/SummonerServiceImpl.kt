@@ -22,7 +22,7 @@ class SummonerServiceImpl(
 
     override fun registerSummoner(name: String) {
         if (summonerRepository.existsSummonerByName(name)) {
-            log.info(ErrorCode.ALREADY_EXISTS_SUMMONER.msg)
+            log.debug("${ErrorCode.ALREADY_EXISTS_SUMMONER.msg} in RegisterSummoner Method")
             throw CustomException(ErrorCode.ALREADY_EXISTS_SUMMONER)
         }
 
@@ -31,7 +31,6 @@ class SummonerServiceImpl(
         summonerRepository.save(Summoner(summoner))
     }
 
-    override fun getPuuid(name: String): String
-            = summonerCustomRepository.findPuuidByName(name)
+    override fun getPuuid(name: String): String = summonerCustomRepository.findPuuidByName(name)
         ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
 }
