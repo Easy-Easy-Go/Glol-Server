@@ -126,10 +126,8 @@ class MatchServiceImpl(
                     remoteSummonerFacade.getSummonerByPuuid(puuid)
                 }
             }.awaitAll().map { summoner ->
-                async(Dispatchers.IO) {
-                    summonerRepository.save(Summoner(summoner))
-                }
-            }.awaitAll().toMutableList()
+                summonerRepository.save(Summoner(summoner))
+            }
         }
     }
 
