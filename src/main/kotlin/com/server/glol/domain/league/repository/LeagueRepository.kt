@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface LeagueRepository : JpaRepository<League, Long> {
-    fun findLeagueBySummonerNameAndQueueType(name: String, queueType: String): League?
+    fun findLeagueBySummonerNameAndQueueType(name: String, queueType: String): League
+    fun existsBySummonerName(name: String): Boolean
 }

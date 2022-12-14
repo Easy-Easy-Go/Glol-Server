@@ -1,8 +1,8 @@
 package com.server.glol.domain.league.service
 
-import com.server.glol.domain.league.dto.LeagueDto
+import com.server.glol.domain.league.dto.projection.LeagueResponse
 
 interface LeagueService {
-    fun getLeague(name: String) : MutableSet<LeagueDto>
+    fun getLeague(id: String) : MutableSet<LeagueResponse>
     fun saveLeague(name: String)
 }
