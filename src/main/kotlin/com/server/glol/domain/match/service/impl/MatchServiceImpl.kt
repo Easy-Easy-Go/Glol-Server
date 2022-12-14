@@ -21,8 +21,8 @@ import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -40,6 +40,8 @@ class MatchServiceImpl(
     private val leagueService: LeagueService,
     private val remoteSummonerFacade: RemoteSummonerFacade,
 ) : MatchService {
+
+    val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @Transactional
     override fun renewalMatches(name: String, matchPageable: MatchPageable) {

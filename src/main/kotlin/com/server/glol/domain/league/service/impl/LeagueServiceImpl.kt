@@ -7,7 +7,8 @@ import com.server.glol.domain.league.repository.LeagueRepository
 import com.server.glol.domain.league.service.LeagueService
 import com.server.glol.domain.league.service.facade.RemoteLeagueFacade
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -22,6 +23,8 @@ class LeagueServiceImpl(
     private val leagueCustomRepository: LeagueCustomRepository,
     private val leagueRepository: LeagueRepository,
 ) : LeagueService {
+
+    val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun getLeague(name: String): MutableSet<LeagueDto> =
         if (!summonerRepository.existsSummonerByName(name)) {
