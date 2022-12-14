@@ -3,10 +3,8 @@ package com.server.glol.domain.summoner.service.impl
 import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
-import com.server.glol.global.config.banned.BannedAccountConfig
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode
 import org.slf4j.Logger
@@ -30,15 +28,10 @@ class SummonerServiceImpl(
 
         val summoner = remoteSummonerFacade.getSummonerByName(name)
 
-        saveByName(summoner)
+        summonerRepository.save(Summoner(summoner))
     }
 
     override fun getPuuid(name: String): String
             = summonerCustomRepository.findPuuidByName(name)
         ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
-
-    private fun saveByName(summoner: SummonerDto) {
-        if (summoner.name != BannedAccountConfig.name)
-            summonerRepository.save(Summoner(summoner))
-    }
 }
