@@ -1,0 +1,11 @@
+### 전적 갱신
+POST {{glol-api}}/match/renewal/권선징악어부/?queue=420&count=1
+Content-Type: application/json
+
+### 전적 단일 조회
+GET {{glol-api}}/match/KR_6254571111
+
+### 전적 전체 조회
+GET {{glol-api}}/match/matches/권선징악어부/?queue=420&count=1
+Content-Type: application/json
+

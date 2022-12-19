@@ -1,0 +1,4 @@
+### 1. 소환사 등록
+
+POST {{glol-api}}/summoner/registration/권선징악어부
+Content-Type: application/json
