@@ -5,4 +5,5 @@ enum class ErrorCode(val status: Int, val msg: String) {
     ALREADY_EXISTS_SUMMONER(404, "Already Exists Summoner"),
     NOT_FOUND_MATCH(404, "Not Found Match"),
     NOT_FOUND_LEAGUE(404, "Not Found League"),
+    ALREADY_RENEWED(202, "Already Renewed")
 }

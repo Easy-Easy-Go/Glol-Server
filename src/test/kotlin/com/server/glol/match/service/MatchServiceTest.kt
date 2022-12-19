@@ -105,13 +105,12 @@ class MatchServiceTest : DescribeSpec({
                 verify(exactly = 1) { matchService.renewalMatches(NAME, matchPageable) }
             }
         }
-
     }
 }) {
     companion object {
         private const val MATCH_ID = "KR_6226008135"
         private const val NAME = "권선징악어부"
-        val matchPageable = MatchPageable(420, 0)
+        val matchPageable = MatchPageable(queue = 420, count = 0)
         private val matchResponse = MatchResponse(MetadataDto(MATCH_ID, "SOLO_RANK", 1000), mutableListOf())
         private val matchDto: MatchDto = MatchDto(ParticipantsDto("KR_6226008135"))
 

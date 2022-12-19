@@ -6,6 +6,8 @@ import com.server.glol.domain.match.service.facade.RemoteMatchFacade
 import com.server.glol.global.config.properties.RiotProperties
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -16,15 +18,20 @@ RemoteMatchFacadeImpl(
     private val webClient: WebClient,
 ) : RemoteMatchFacade {
 
+    val log: Logger = LoggerFactory.getLogger(this.javaClass)
+
     override fun getMatchIds(puuid: String, matchPageable: MatchPageable): MutableList<String> {
         val matchIds: MutableList<String> = mutableListOf()
 
         return webClient.mutate().build()
             .get()
-            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?queue=" + matchPageable.queue + "&count=" + matchPageable.count)
+            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?count=" + matchPageable.count)
             .retrieve()
             .bodyToMono(matchIds::class.java)
-            .onErrorResume { throw CustomException(ErrorCode.NOT_FOUND_MATCH) }
+            .onErrorResume {
+                log.info("find puuid is : $puuid ${ErrorCode.NOT_FOUND_MATCH.msg}")
+                throw CustomException(ErrorCode.NOT_FOUND_MATCH)
+            }
             .block()!!
     }
 
@@ -33,6 +40,9 @@ RemoteMatchFacadeImpl(
             .get().uri(riotProperties.matchesMatchIdUrl + matchId)
             .retrieve()
             .bodyToMono(MatchDto().javaClass)
-            .onErrorResume { throw CustomException(ErrorCode.NOT_FOUND_MATCH) }
+            .onErrorResume {
+                log.info("find matchId is : $matchId ${ErrorCode.NOT_FOUND_MATCH.msg}")
+                throw CustomException(ErrorCode.NOT_FOUND_MATCH)
+            }
             .block()!!
 }
