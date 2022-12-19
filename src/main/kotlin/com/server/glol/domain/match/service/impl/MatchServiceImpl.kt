@@ -18,6 +18,7 @@ import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
+import com.server.glol.global.exception.ErrorCode.ALREADY_RENEWED
 import com.server.glol.global.exception.ErrorCode.NOT_FOUND_SUMMONER
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -48,13 +49,21 @@ class MatchServiceImpl(
     @Transactional
     override fun renewalMatches(name: String, matchPageable: MatchPageable) {
 
-        isNotExistsSummonerCheck(name)
+        if (isNotExistsSummoner(name)) {
+            log.info("${NOT_FOUND_SUMMONER.msg} in method existsSummonerCheck")
+            throw CustomException(NOT_FOUND_SUMMONER)
+        }
 
         val puuid = summonerService.getPuuid(name)
 
-        remoteMatchFacade.getMatchIds(puuid, matchPageable)
-            .filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
-            .let { matchIds -> entitySave(getMatchesDetail(matchIds)) }
+        val matchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
+
+        renewalStatusCheck(name, matchIds.first())
+
+        matchIds.filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
+            .let { matchIds ->
+                entitySave(getMatchesDetail(matchIds))
+            }
 
         leagueService.saveLeague(name)
     }
@@ -140,13 +149,17 @@ class MatchServiceImpl(
         val matchDetailDto: MutableList<MatchDetailDto> = mutableListOf()
 
         matchDto.forEach { match ->
-            val matchId = match.metadata.matchId
-            val queueId = toQueueType(match.info.queueId)
-            val gameDuration = match.info.gameDuration
-            val participants = match.metadata.participants
-
             match.info.participants.forEach { participant ->
-                matchDetailDto.add(MatchDetailDto(matchId, queueId, gameDuration, participants, participant))
+                matchDetailDto.add(
+                    MatchDetailDto(
+                        matchId = match.metadata.matchId,
+                        queueId = toQueueType(match.info.queueId),
+                        gameDuration = match.info.gameDuration,
+                        gameCreation = match.info.gameCreation,
+                        participantsPuuid = match.metadata.participants,
+                        participant = participant
+                    )
+                )
             }
         }
         return matchDetailDto
@@ -171,10 +184,12 @@ class MatchServiceImpl(
 
     private fun isNotExistsMatch(matchId: String): Boolean = !matchRepository.existsByMatchId(matchId)
 
-    private fun isNotExistsSummonerCheck(name: String) {
-        if (isNotExistsSummoner(name)) {
-            log.debug("${NOT_FOUND_SUMMONER.msg} in method existsSummonerCheck")
-            throw CustomException(NOT_FOUND_SUMMONER)
+    private fun renewalStatusCheck(name: String, matchId: String) {
+        val findMatchId = matchCustomRepository.findLastMatchIdBySummonerName(name)
+
+        if (matchId == findMatchId) {
+            log.info("already renewed this summoner : $name")
+            throw CustomException(ALREADY_RENEWED)
         }
     }
 }
