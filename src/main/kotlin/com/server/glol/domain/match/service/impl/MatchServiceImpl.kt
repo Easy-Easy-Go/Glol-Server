@@ -13,7 +13,6 @@ import com.server.glol.domain.match.repository.MatchCustomRepository
 import com.server.glol.domain.match.repository.MatchRepository
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.facade.RemoteMatchFacade
-import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerRepository
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
@@ -133,17 +132,14 @@ class MatchServiceImpl(
                 async(Dispatchers.IO) {
                     remoteSummonerFacade.getSummonerByPuuid(puuid)
                 }
-            }.awaitAll().map { summoner ->
-                summonerRepository.save(Summoner(summoner))
-            }
+            }.awaitAll().let { summonerRepository.saveAll(it.map { it.toSummoner() }) }
         }
     }
 
-    private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> {
-        return toMatchDetailDto(matchIds.map { matchId ->
+    private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> =
+        toMatchDetailDto(matchIds.map { matchId ->
             remoteMatchFacade.getMatch(matchId)
         }.toMutableList())
-    }
 
     private fun toMatchDetailDto(matchDto: MutableList<MatchDto>): MutableList<MatchDetailDto> {
         val matchDetailDto: MutableList<MatchDetailDto> = mutableListOf()
