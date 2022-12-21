@@ -1,9 +1,11 @@
 package com.server.glol.domain.summoner.entities
 
 import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 
 @Entity
+@DynamicUpdate
 @Table(name = "summoner")
 class Summoner(
     @Column(name = "id")
