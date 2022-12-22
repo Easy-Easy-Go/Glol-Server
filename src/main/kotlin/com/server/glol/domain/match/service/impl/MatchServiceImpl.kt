@@ -1,5 +1,9 @@
 package com.server.glol.domain.match.service.impl
 
+import com.server.glol.domain.champion.entities.Champion
+import com.server.glol.domain.champion.repository.ChampionRepository
+import com.server.glol.domain.item.entities.Item
+import com.server.glol.domain.item.repository.ItemRepository
 import com.server.glol.domain.league.service.LeagueService
 import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.projection.MatchesDto
@@ -135,6 +139,14 @@ class MatchServiceImpl(
             }.awaitAll().let { summonerRepository.saveAll(it.map { it.toSummoner() }) }
         }
     }
+
+    private fun SummonerDto.toSummoner(): Summoner = Summoner(
+        id = this.id,
+        accountId = this.accountId,
+        name = this.name,
+        puuid = this.puuid,
+        profileIconId = this.profileIconId
+    )
 
     private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> =
         toMatchDetailDto(matchIds.map { matchId ->

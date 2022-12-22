@@ -1,5 +1,7 @@
 package com.server.glol.domain.match.entities
 
+import com.server.glol.domain.champion.entities.Champion
+import com.server.glol.domain.item.entities.Item
 import com.server.glol.domain.match.dto.MatchDetailDto
 import com.server.glol.domain.summoner.entities.Summoner
 import java.time.LocalDateTime

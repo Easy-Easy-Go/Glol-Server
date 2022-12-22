@@ -1,8 +1,9 @@
-package com.server.glol.domain.match.entities
+package com.server.glol.domain.item.entities
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
 import com.server.glol.domain.match.dto.MatchDetailDto
+import com.server.glol.domain.match.entities.Match
 import javax.persistence.*
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
