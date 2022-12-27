@@ -1,15 +1,18 @@
-package com.server.glol.domain.league.dto.projection
+package com.server.glol.domain.summonerProfile.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.querydsl.core.annotations.QueryProjection
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class LeagueResponse @QueryProjection constructor(
+class SummonerProfileDto(
+    val leagueId: String = "",
     val queueType: String = "",
     val tier: String = "",
     val rank: String = "",
+    val summonerId: String = "",
     val summonerName: String = "",
     val leaguePoints: Int = 0,
     val wins: Int = 0,
     val losses: Int = 0,
+    var winRate: Int = 0,
+    var games: Int = 0,
 )

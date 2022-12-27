@@ -4,20 +4,18 @@ import com.server.glol.domain.champion.entities.Champion
 import com.server.glol.domain.champion.repository.ChampionRepository
 import com.server.glol.domain.item.entities.Item
 import com.server.glol.domain.item.repository.ItemRepository
-import com.server.glol.domain.league.service.LeagueService
+import com.server.glol.domain.summonerProfile.service.SummonerProfileService
 import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.projection.MatchesDto
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
-import com.server.glol.domain.match.entities.Champion
-import com.server.glol.domain.match.entities.Item
 import com.server.glol.domain.match.entities.Match
-import com.server.glol.domain.match.repository.ChampionRepository
-import com.server.glol.domain.match.repository.ItemRepository
 import com.server.glol.domain.match.repository.MatchCustomRepository
 import com.server.glol.domain.match.repository.MatchRepository
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.facade.RemoteMatchFacade
+import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerRepository
+import com.server.glol.domain.summoner.repository.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
@@ -43,7 +41,7 @@ class MatchServiceImpl(
     private val itemRepository: ItemRepository,
     private val remoteMatchFacade: RemoteMatchFacade,
     private val championRepository: ChampionRepository,
-    private val leagueService: LeagueService,
+    private val summonerProfileService: SummonerProfileService,
     private val remoteSummonerFacade: RemoteSummonerFacade,
 ) : MatchService {
 
@@ -68,7 +66,7 @@ class MatchServiceImpl(
                 entitySave(getMatchesDetail(matchIds))
             }
 
-        leagueService.saveLeague(name)
+        summonerProfileService.saveSummonerProfile(name)
     }
 
     override fun getMatch(matchId: String): MatchResponse {
