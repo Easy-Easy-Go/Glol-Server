@@ -1,26 +1,26 @@
 package com.server.glol.domain.affiliation.entities
 
-import com.server.glol.domain.group.entities.Group
-import com.server.glol.domain.summoner.entities.Summoner
+import com.server.glol.domain.summonerProfile.entities.SummonerProfile
+import com.server.glol.domain.team.entities.Team
 import javax.persistence.*
 
 @Entity
 class Affiliation(
 
     @ManyToOne(
-        targetEntity = Group::class,
+        targetEntity = Team::class,
         fetch = FetchType.LAZY
     )
     @JoinColumn(nullable = true, updatable = true)
-    var group: Group? = null,
+    var team: Team,
 
 
     @ManyToOne(
-        targetEntity = Summoner::class,
+        targetEntity = SummonerProfile::class,
         fetch = FetchType.LAZY
     )
     @JoinColumn(nullable = true, updatable = true)
-    var summoner: Summoner? = null
+    var summonerProfile: SummonerProfile
 ) {
 
     @Id
