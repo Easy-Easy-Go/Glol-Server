@@ -15,19 +15,19 @@ class RemoteSummonerProfileFacadeTest: DescribeSpec({
     describe("getSummonerProfile 가") {
 
         context("유효한 name을 받을 경우") {
-            every { remoteLeague.getSummonerProfile(NAME) } returns summonerProfileDtos
+            every { remoteLeague.getSummonerProfile(NAME) } returns summonerProfilesDto
 
             val getLeague = remoteLeague.getSummonerProfile(NAME)
 
-            it("leagueDto를 반환한다") {
-                getLeague shouldBe summonerProfileDtos
+            it("summonerProfilesDto를 반환한다") {
+                getLeague shouldBe summonerProfilesDto
             }
         }
 
         context("유효하지 않은 name을 받을 경우") {
             every { remoteLeague.getSummonerProfile(NAME) } throws CustomException(NOT_FOUND_SUMMONER_PROFILE)
 
-            it("Not found league exception을 던진다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     remoteLeague.getSummonerProfile(NAME)
                 }
@@ -38,7 +38,7 @@ class RemoteSummonerProfileFacadeTest: DescribeSpec({
 }) {
     companion object {
         private const val NAME = "권선징악어부"
-        private val summonerProfileDtos = mutableSetOf(
+        private val summonerProfilesDto = mutableSetOf(
             SummonerProfileDto(queueType = "SOLO_RANK", summonerName = NAME),
             SummonerProfileDto(queueType = "FREE_RANK", summonerName = NAME)
         )

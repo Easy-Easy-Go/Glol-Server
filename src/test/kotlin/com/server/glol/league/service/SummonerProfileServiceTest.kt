@@ -32,7 +32,7 @@ class SummonerProfileServiceTest : DescribeSpec({
             every { summonerRepository.existsSummonerByName(NAME) } returns false
             every { remoteLeague.getSummonerProfile(NAME) } throws CustomException(NOT_FOUND_SUMMONER_PROFILE)
 
-            it("Not found SummonerPrfile exception을 반환합니다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     remoteLeague.getSummonerProfile(NAME)
                 }
