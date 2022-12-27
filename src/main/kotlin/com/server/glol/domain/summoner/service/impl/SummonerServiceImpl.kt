@@ -22,7 +22,7 @@ class SummonerServiceImpl(
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun registerSummoner(name: String): Long {
-        if (isNotExistsSummoner(name)) {
+        if (isExistsSummoner(name)) {
             log.debug("${ErrorCode.ALREADY_EXISTS_SUMMONER.msg} in RegisterSummoner Method")
             throw CustomException(ErrorCode.ALREADY_EXISTS_SUMMONER)
         }
@@ -33,7 +33,7 @@ class SummonerServiceImpl(
     override fun getPuuid(name: String): String = summonerCustomRepository.findPuuidByName(name)
         ?: remoteSummonerFacade.getSummonerByPuuid(name).puuid
 
-    private fun isNotExistsSummoner(name: String): Boolean = !summonerRepository.existsSummonerByName(name)
+    private fun isExistsSummoner(name: String): Boolean = summonerRepository.existsSummonerByName(name)
 
     private fun getSummonerByName(name: String) = remoteSummonerFacade.getSummonerByName(name)
 

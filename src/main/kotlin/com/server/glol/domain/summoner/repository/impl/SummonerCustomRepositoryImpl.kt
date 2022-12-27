@@ -17,6 +17,7 @@ class SummonerCustomRepositoryImpl(private val query: JPAQueryFactory) : Summone
                 summoner.name,
                 summoner.puuid,
                 summoner.profileIconId,
+                summoner.level
             )
         )
             .from(summoner)

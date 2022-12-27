@@ -23,11 +23,13 @@ class Summoner(
     @Column(name = "profile_icon_id")
     val profileIconId: Int = 0,
 
-) {
+    val level: Int = 0,
+
     @Id
     @Column(name = "summoner_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idx: Long? = null
+    var idx: Long? = null
+    ) {
 
     @Column(name = "summoner_id")
     var summonerId: String = ""
@@ -42,6 +44,7 @@ class Summoner(
         accountId = summonerDto.accountId,
         name = summonerDto.name,
         puuid = summonerDto.puuid,
-        profileIconId = summonerDto.profileIconId
+        profileIconId = summonerDto.profileIconId,
+        level = summonerDto.summonerLevel
     )
 }
