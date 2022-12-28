@@ -37,4 +37,10 @@ class SummonerProfileCustomRepositoryImpl(
             .innerJoin(summonerProfile.summoner, summoner)
             .where(summoner.name.eq(name), summonerProfile.queueType.eq(queueType))
             .fetchOne()
+
+    override fun getHighRankSummonerProfileByName(name: String): SummonerProfile = query.selectFrom(summonerProfile)
+        .innerJoin(summonerProfile.summoner, summoner)
+        .where(summoner.name.eq(name))
+        .orderBy(summonerProfile.rankScore.desc())
+        .fetchFirst()
 }
