@@ -1,7 +1,5 @@
 package com.server.glol.domain.team.service.impl
 
-import com.server.glol.domain.summonerProfile.repository.SummonerProfileRepository
-import com.server.glol.domain.team.dto.RegisterTeamDto
 import com.server.glol.domain.team.entities.Team
 import com.server.glol.domain.team.repository.TeamRepository
 import com.server.glol.domain.team.service.TeamService
@@ -14,24 +12,18 @@ import org.springframework.stereotype.Service
 @Service
 class TeamServiceImpl(
     private val teamRepository: TeamRepository,
-    private val summonerProfileRepository: SummonerProfileRepository,
 ) : TeamService {
 
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    override fun createTeam(dto: RegisterTeamDto) {
+    override fun createTeam(teamName: String) {
 
-        if (isExistsTeam(dto.teamName)) {
-            log.info("${ALREADY_EXISTS_TEAM.msg} by ${dto.teamName}")
+        if (isExistsTeam(teamName)) {
+            log.info("${ALREADY_EXISTS_TEAM.msg} by $teamName")
             throw CustomException(ALREADY_EXISTS_TEAM)
         }
 
-        if (leagueNotExists(dto.summonerProfileIdx)) {
-            log.info("${NOT_FOUND_SUMMONER_PROFILE.msg} by ${dto.summonerProfileIdx}")
-            throw CustomException(NOT_FOUND_SUMMONER_PROFILE)
-        }
-
-        teamRepository.save(Team(name = dto.teamName))
+        teamRepository.save(Team(name = teamName))
     }
 
     override fun teamExistsCheck(teamName: String): Boolean {
@@ -45,6 +37,5 @@ class TeamServiceImpl(
 
     private fun isNotExistsTeam(name: String): Boolean = !teamRepository.existsByName(name)
     private fun isExistsTeam(name: String): Boolean = teamRepository.existsByName(name)
-    private fun leagueNotExists(idx: Long): Boolean = !summonerProfileRepository.existsByIdx(idx)
 
 }

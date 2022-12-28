@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/team")
 class TeamController(private val teamService: TeamService) {
 
-    @PostMapping("/register")
-    fun createTeam(@RequestBody registerTeamDto: RegisterTeamDto) = teamService.createTeam(registerTeamDto)
+    @PostMapping("/register/{teamName}")
+    fun createTeam(@PathVariable teamName: String) = teamService.createTeam(teamName)
 
     @GetMapping("/register/{teamName}")
     fun existsCheckTeam(@PathVariable teamName: String) = teamService.teamExistsCheck(teamName)

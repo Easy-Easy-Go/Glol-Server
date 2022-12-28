@@ -1,27 +1,28 @@
 package com.server.glol.team.service
 
-import com.server.glol.domain.summonerProfile.repository.SummonerProfileRepository
 import com.server.glol.domain.team.dto.RegisterTeamDto
 import com.server.glol.domain.team.entities.Team
 import com.server.glol.domain.team.repository.TeamRepository
 import com.server.glol.domain.team.service.TeamService
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode.ALREADY_EXISTS_TEAM
-import com.server.glol.global.exception.ErrorCode.NOT_FOUND_SUMMONER_PROFILE
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 
 class TeamServiceTest : DescribeSpec({
 
     describe("registerTeam이") {
 
-        context("유효한 registerDto를 받는 경우") {
-            every { teamService.createTeam(teamDto) } just Runs
+        context("유효한 teamName을 받는 경우") {
+            every { teamService.createTeam(TEAM_NAME) } just Runs
             every { teamRepository.findByName(teamDto.teamName) } returns saveTeam
 
-            teamService.createTeam(teamDto)
+            teamService.createTeam(TEAM_NAME)
 
             val findTeam = teamRepository.findByName(teamDto.teamName)
 
@@ -30,24 +31,13 @@ class TeamServiceTest : DescribeSpec({
             }
         }
 
-        context("summonerProfileIdx가 존재하지 않을 때") {
-            every { summonerProfileRepository.existsByIdx(notValidDto.summonerProfileIdx) } returns false
-            every { teamService.createTeam(notValidDto) } throws CustomException(NOT_FOUND_SUMMONER_PROFILE)
-
-            it("예외가 발생한다") {
-                shouldThrow<CustomException> {
-                    teamService.createTeam(notValidDto)
-                }
-            }
-        }
-
         context("이미 Team이 존재할 때") {
             every { teamRepository.existsByName(notValidDto.teamName) } returns true
-            every { teamService.createTeam(notValidDto) } throws CustomException(ALREADY_EXISTS_TEAM)
+            every { teamService.createTeam(TEAM_NAME) } throws CustomException(ALREADY_EXISTS_TEAM)
 
             it("예외가 발생한다") {
                 shouldThrow<CustomException> {
-                    teamService.createTeam(notValidDto)
+                    teamService.createTeam(TEAM_NAME)
                 }
             }
         }
@@ -83,6 +73,5 @@ class TeamServiceTest : DescribeSpec({
 
         private val teamService = mockk<TeamService>()
         private val teamRepository = mockk<TeamRepository>()
-        private val summonerProfileRepository = mockk<SummonerProfileRepository>()
     }
 }
