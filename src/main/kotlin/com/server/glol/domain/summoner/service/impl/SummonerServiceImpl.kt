@@ -3,7 +3,7 @@ package com.server.glol.domain.summoner.service.impl
 import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerCustomRepository
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException

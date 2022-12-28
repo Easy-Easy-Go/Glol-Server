@@ -1,6 +1,6 @@
 package com.server.glol.domain.summoner.entities
 
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import org.hibernate.annotations.DynamicUpdate
 import javax.persistence.*
 

@@ -1,4 +1,4 @@
-package com.server.glol.domain.summoner.repository.projection
+package com.server.glol.domain.summoner.dto.projection
 
 import com.querydsl.core.annotations.QueryProjection
 

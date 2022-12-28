@@ -15,7 +15,7 @@ import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.facade.RemoteMatchFacade
 import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
@@ -57,11 +57,11 @@ class MatchServiceImpl(
 
         val puuid = summonerService.getPuuid(name)
 
-        val matchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
+        val getMatchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
 
-        renewalStatusCheck(name, matchIds.first())
+        renewalStatusCheck(name, getMatchIds.first())
 
-        matchIds.filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
+        getMatchIds.filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
             .let { matchIds ->
                 entitySave(getMatchesDetail(matchIds))
             }
@@ -143,7 +143,8 @@ class MatchServiceImpl(
         accountId = this.accountId,
         name = this.name,
         puuid = this.puuid,
-        profileIconId = this.profileIconId
+        profileIconId = this.profileIconId,
+        level = this.summonerLevel
     )
 
     private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> =

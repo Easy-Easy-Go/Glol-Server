@@ -1,6 +1,6 @@
 package com.server.glol.summoner.facade
 
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode.NOT_FOUND_SUMMONER

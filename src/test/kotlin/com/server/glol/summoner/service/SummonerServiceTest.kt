@@ -1,7 +1,7 @@
 package com.server.glol.summoner.service
 
 import com.server.glol.domain.summoner.repository.SummonerRepository
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
