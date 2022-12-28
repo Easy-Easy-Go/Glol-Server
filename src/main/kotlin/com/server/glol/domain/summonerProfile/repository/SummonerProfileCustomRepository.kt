@@ -5,5 +5,5 @@ import com.server.glol.domain.summonerProfile.entities.SummonerProfile
 
 interface SummonerProfileCustomRepository {
     fun getSummonerProfileByName(name: String): MutableSet<SummonerProfileResponse>
-    fun getSummonerProfile(name: String, queueType: String) : SummonerProfile?
+    fun getSummonerProfileByQueueTypeAndName(name: String, queueType: String) : SummonerProfile?
 }

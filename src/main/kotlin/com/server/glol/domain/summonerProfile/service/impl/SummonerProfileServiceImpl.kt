@@ -32,7 +32,7 @@ class SummonerProfileServiceImpl(
     val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun getSummonerProfile(name: String): MutableSet<SummonerProfileResponse> {
-        if (isExistsLeague(name))
+        if (isExistsSummonerProfile(name))
             return summonerProfileCustomRepository.getSummonerProfileByName(name)
         else {
             log.debug("${NOT_FOUND_SUMMONER_PROFILE.msg} in getLeague")
@@ -42,8 +42,10 @@ class SummonerProfileServiceImpl(
 
     @Transactional
     override fun saveSummonerProfile(name: String) {
-        val soloSummonerProfile = summonerProfileCustomRepository.getSummonerProfile(name, SOLO_RANK) ?: SummonerProfile()
-        val freeSummonerProfile = summonerProfileCustomRepository.getSummonerProfile(name, FREE_RANK) ?: SummonerProfile()
+        val soloSummonerProfile =
+            summonerProfileCustomRepository.getSummonerProfileByQueueTypeAndName(name, SOLO_RANK) ?: SummonerProfile()
+        val freeSummonerProfile =
+            summonerProfileCustomRepository.getSummonerProfileByQueueTypeAndName(name, FREE_RANK) ?: SummonerProfile()
         val findSummoner = summonerRepository.findSummonerByName(name)!!
         val getLeague = getLeagueByName(findSummoner.name)
 
@@ -58,7 +60,7 @@ class SummonerProfileServiceImpl(
         summonerProfileDto.elementAt(0).let { findSummoner.updateSummonerId(it.summonerId) }
     }
 
-    private fun isExistsLeague(name: String): Boolean = summonerProfileRepository.existsBySummonerName(name)
+    private fun isExistsSummonerProfile(name: String): Boolean = summonerProfileRepository.existsBySummonerName(name)
 
     private fun isExistsSummoner(name: String): Boolean = summonerRepository.existsSummonerByName(name)
 
@@ -77,14 +79,64 @@ class SummonerProfileServiceImpl(
         findSummoner: Summoner,
         summonerProfile: MutableSet<SummonerProfileDto>
     ) {
-        soloSummonerProfile.summonerProfileUpdate(summonerProfile.elementAt(0).calculate(), findSummoner)
-        freeSummonerProfile.summonerProfileUpdate(summonerProfile.elementAt(1).calculate(), findSummoner)
+        soloSummonerProfile.summonerProfileUpdate(
+            summonerProfile.elementAt(0).setGamesAndWinRate().rankSetting().rankScoreRecord(),
+            findSummoner
+        )
+        freeSummonerProfile.summonerProfileUpdate(
+            summonerProfile.elementAt(1).setGamesAndWinRate().rankSetting().rankScoreRecord(),
+            findSummoner
+        )
     }
 
-    private fun SummonerProfileDto.calculate(): SummonerProfileDto {
+    private fun SummonerProfileDto.setGamesAndWinRate(): SummonerProfileDto {
         this.games = this.wins + this.losses
         this.winRate = (this.wins / this.games.toDouble() * 100).roundToInt()
 
         return this
+    }
+
+    private fun SummonerProfileDto.rankSetting(): SummonerProfileDto {
+        this.queueType = when (this.queueType) {
+            "RANKED_FLEX_SR" -> "자유랭크"
+            "RANKED_SOLO_5x5" -> "솔로랭크"
+            else -> {
+                "기타"
+            }
+        }
+
+        return this
+    }
+
+    private fun SummonerProfileDto.rankScoreRecord(): SummonerProfileDto {
+        this.rankScore = this.convertTier() + this.convertRank()
+
+        return this
+    }
+
+    private fun SummonerProfileDto.convertRank(): Int =
+        when (tier) {
+            "I" -> 1
+            "II" -> 2
+            "III" -> 3
+            "IV" -> 4
+            else -> {
+                0
+            }
+        }
+
+    private fun SummonerProfileDto.convertTier(): Int = when (rank) {
+        "Iron" -> 0
+        "Bronze" -> 5
+        "Silver" -> 10
+        "Gold" -> 15
+        "Platinum" -> 20
+        "Diamond" -> 25
+        "Master" -> 30
+        "Grandmaster" -> 35
+        "Challenger" -> 40
+        else -> {
+            100
+        }
     }
 }

@@ -14,6 +14,8 @@ class SummonerProfile(
     @Column(name = "rank")
     var rank: String = "",
 
+    var tier: String = "",
+
     @Column(name = "league_points")
     var leaguePoints: Int = 0,
 
@@ -29,6 +31,8 @@ class SummonerProfile(
     var winRate: Int = 0,
 
     var games: Int = 0,
+
+    var rankScore: Int = 0,
 
     @ManyToOne(
         cascade = [CascadeType.REMOVE],
@@ -48,7 +52,8 @@ class SummonerProfile(
         this.leagueId = summonerProfileDto.leagueId
         this.leaguePoints = summonerProfileDto.leaguePoints
         this.losses = summonerProfileDto.losses
-        this.rank = summonerProfileDto.tier.plus(" ${summonerProfileDto.rank}")
+        this.rank = summonerProfileDto.rank
+        this.tier = summonerProfileDto.tier
         this.wins = summonerProfileDto.wins
         this.queueType = summonerProfileDto.queueType
         this.summoner = summoner

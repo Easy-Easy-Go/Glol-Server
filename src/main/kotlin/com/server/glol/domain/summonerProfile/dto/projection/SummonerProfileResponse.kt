@@ -7,6 +7,7 @@ import com.querydsl.core.annotations.QueryProjection
 class SummonerProfileResponse @QueryProjection constructor(
     val queueType: String = "",
     val rank: String = "",
+    val tier: String = "",
     val summonerName: String = "",
     val leaguePoints: Int = 0,
     val wins: Int = 0,

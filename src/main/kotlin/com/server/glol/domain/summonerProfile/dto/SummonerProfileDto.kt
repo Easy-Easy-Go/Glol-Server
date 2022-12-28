@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 @JsonIgnoreProperties(ignoreUnknown = true)
 class SummonerProfileDto(
     val leagueId: String = "",
-    val queueType: String = "",
+    var queueType: String = "",
     val tier: String = "",
     val rank: String = "",
     val summonerId: String = "",
@@ -15,4 +15,5 @@ class SummonerProfileDto(
     val losses: Int = 0,
     var winRate: Int = 0,
     var games: Int = 0,
+    var rankScore: Int = 0
 )

@@ -3,10 +3,11 @@ package com.server.glol.domain.summonerProfile.repository.impl
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.server.glol.domain.summonerProfile.dto.projection.SummonerProfileResponse
-import com.server.glol.domain.summonerProfile.dto.projection.QLeagueResponse
-import com.server.glol.domain.summonerProfile.entities.QLeague.league
 import com.server.glol.domain.summonerProfile.repository.SummonerProfileCustomRepository
 import com.server.glol.domain.summoner.entities.QSummoner.summoner
+import com.server.glol.domain.summonerProfile.dto.projection.QSummonerProfileResponse
+import com.server.glol.domain.summonerProfile.entities.QSummonerProfile.summonerProfile
+import com.server.glol.domain.summonerProfile.entities.SummonerProfile
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -15,24 +16,25 @@ class SummonerProfileCustomRepositoryImpl(
 ) : SummonerProfileCustomRepository {
     override fun getSummonerProfileByName(name: String): MutableSet<SummonerProfileResponse> =
         query.select(
-            QLeagueResponse(
-                league.queueType,
-                league.rank,
-                Expressions.constantAs(name, league.summoner.name),
-                league.leaguePoints,
-                league.wins,
-                league.losses,
-                league.winRate,
-                league.games
+            QSummonerProfileResponse(
+                summonerProfile.queueType,
+                summonerProfile.rank,
+                summonerProfile.tier,
+                Expressions.constantAs(name, summonerProfile.summoner.name),
+                summonerProfile.leaguePoints,
+                summonerProfile.wins,
+                summonerProfile.losses,
+                summonerProfile.winRate,
+                summonerProfile.games
             )
         )
-            .where(league.summoner.name.eq(name))
-            .from(league)
+            .where(summonerProfile.summoner.name.eq(name))
+            .from(summonerProfile)
             .fetch().toMutableSet()
 
-    override fun getSummonerProfile(name: String, queueType: String) =
-        query.selectFrom(league)
-            .innerJoin(league.summoner, summoner)
-            .where(summoner.name.eq(name), league.queueType.eq(queueType))
+    override fun getSummonerProfileByQueueTypeAndName(name: String, queueType: String) =
+        query.selectFrom(summonerProfile)
+            .innerJoin(summonerProfile.summoner, summoner)
+            .where(summoner.name.eq(name), summonerProfile.queueType.eq(queueType))
             .fetchOne()
 }
