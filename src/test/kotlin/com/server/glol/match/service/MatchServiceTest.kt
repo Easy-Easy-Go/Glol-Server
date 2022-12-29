@@ -52,7 +52,7 @@ class MatchServiceTest : DescribeSpec({
             context("해당 matchId가 존재하지 않을 때") {
                 every { remoteMatch.getMatch(notExistsMatchId) } throws CustomException(NOT_FOUND_MATCH)
 
-                it("Not found match CustomException를 던진다") {
+                it("예외를 반환한다") {
                     shouldThrow<CustomException> {
                         remoteMatch.getMatch(notExistsMatchId)
                     }
@@ -85,7 +85,7 @@ class MatchServiceTest : DescribeSpec({
                 matchService.getMatches(notExistsName, matchPageable, pageable)
             } throws CustomException(NOT_FOUND_SUMMONER)
 
-            it("Not found Summoner Exception을 던진다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     matchService.getMatches(notExistsName, matchPageable, pageable)
                 }
@@ -105,13 +105,12 @@ class MatchServiceTest : DescribeSpec({
                 verify(exactly = 1) { matchService.renewalMatches(NAME, matchPageable) }
             }
         }
-
     }
 }) {
     companion object {
         private const val MATCH_ID = "KR_6226008135"
         private const val NAME = "권선징악어부"
-        val matchPageable = MatchPageable(420, 0)
+        val matchPageable = MatchPageable(queue = 420, count = 0)
         private val matchResponse = MatchResponse(MetadataDto(MATCH_ID, "SOLO_RANK", 1000), mutableListOf())
         private val matchDto: MatchDto = MatchDto(ParticipantsDto("KR_6226008135"))
 

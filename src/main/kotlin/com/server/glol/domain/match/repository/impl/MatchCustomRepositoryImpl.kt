@@ -1,12 +1,12 @@
 package com.server.glol.domain.match.repository.impl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.server.glol.domain.champion.entities.QChampion.champion
+import com.server.glol.domain.item.entities.QItem.item
 import com.server.glol.domain.match.dto.MatchInfoDto
 import com.server.glol.domain.match.dto.MatchResponse
 import com.server.glol.domain.match.dto.MetadataDto
 import com.server.glol.domain.match.dto.projection.*
-import com.server.glol.domain.match.entities.QChampion.champion
-import com.server.glol.domain.match.entities.QItem.item
 import com.server.glol.domain.match.entities.QMatch.match
 import com.server.glol.domain.match.repository.MatchCustomRepository
 import com.server.glol.domain.summoner.entities.QSummoner.summoner
@@ -20,8 +20,7 @@ class MatchCustomRepositoryImpl(
     private val query: JPAQueryFactory
 ) : MatchCustomRepository {
 
-    override fun findMatchIdBySummonerName(name: String): MutableList<String>
-    = query.select(match.matchId)
+    override fun findMatchIdBySummonerName(name: String): MutableList<String> = query.select(match.matchId)
         .from(match)
         .innerJoin(match.summoner, summoner)
         .where(summoner.name.eq(name))
@@ -159,4 +158,11 @@ class MatchCustomRepositoryImpl(
 
         return PageImpl(matches, pageable, count!!)
     }
+
+    override fun findLastMatchIdBySummonerName(name: String): String? = query.select(match.matchId)
+        .from(match)
+        .innerJoin(match.summoner, summoner)
+        .where(summoner.name.eq(name))
+        .orderBy(match.gameCreation.desc())
+        .fetchFirst()
 }

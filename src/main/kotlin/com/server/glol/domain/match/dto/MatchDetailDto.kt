@@ -6,6 +6,7 @@ data class MatchDetailDto(
     val matchId: String = "",
     val queueId: String = "",
     val gameDuration: Int = 0,
+    val gameCreation: Long = 0,
     val totalMinionsKilled: Int = 0,
     val kills: Int = 0,
     val assists: Int = 0,
@@ -32,10 +33,11 @@ data class MatchDetailDto(
     val summoner2Id: Int = 0,
     val participantsPuuid: MutableList<String> = mutableListOf(),
 ) {
-    constructor(matchId: String, queueId: String, gameDuration: Int, participantsPuuid: MutableList<String>, participant: ParticipantDto) : this(
+    constructor(matchId: String, queueId: String, gameDuration: Int, gameCreation: Long,participantsPuuid: MutableList<String>, participant: ParticipantDto) : this(
         matchId = matchId,
         queueId = queueId,
         gameDuration = gameDuration,
+        gameCreation = gameCreation,
         kills = participant.kills,
         assists = participant.assists,
         deaths = participant.deaths,

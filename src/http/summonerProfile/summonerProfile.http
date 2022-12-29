@@ -1,0 +1,9 @@
+### SummonerProfile 조회
+
+GET {{glol-api}}/league/권선징악어부
+Content-Type: application/json
+
+### SummonerProfile 저장
+
+POST {{glol-api}}/league/권선징악어부
+Content-Type: application/json

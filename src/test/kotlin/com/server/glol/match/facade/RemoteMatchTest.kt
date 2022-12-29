@@ -27,11 +27,11 @@ class RemoteMatchTest : DescribeSpec({
         }
 
         context("유효하지 않은 인자를 받는 경우") {
-            every { remoteMatchFacade.getMatchIds("", MatchPageable(0, 1)) } throws CustomException(NOT_FOUND_MATCH)
+            every { remoteMatchFacade.getMatchIds("", MatchPageable(queue = 0, count = 0)) } throws CustomException(NOT_FOUND_MATCH)
 
-            it("Not found match exception을 던진다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
-                    remoteMatchFacade.getMatchIds("", MatchPageable(0, 1))
+                    remoteMatchFacade.getMatchIds("", MatchPageable(queue = 0, count = 0))
                 }
             }
         }
@@ -52,7 +52,7 @@ class RemoteMatchTest : DescribeSpec({
         context("존재하지 않는 matchId를 받는 경우") {
             every { remoteMatchFacade.getMatch(notValidMatchId) } throws CustomException(NOT_FOUND_MATCH)
 
-            it("Not found match exception 던진다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     remoteMatchFacade.getMatch(notValidMatchId)
                 }
@@ -64,7 +64,7 @@ class RemoteMatchTest : DescribeSpec({
 }) {
     companion object {
         private val puuid = "Cntz2MXELGgNAbLArhEpA-cQvhgNDcSGzDe2D4kouURrs0meLt2R4hR-oy1XZOrIUTReppExaFK8DA"
-        private val matchPageable = MatchPageable(420, 4)
+        private val matchPageable = MatchPageable(queue = 420, count = 4)
         private val matchIds: MutableList<String> = mutableListOf("KR_6226008135")
         private val match: MatchDto = MatchDto(ParticipantsDto("KR_6226008135"))
         private const val matchId = "KR_6226008135"
