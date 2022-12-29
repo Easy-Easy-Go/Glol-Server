@@ -1,6 +1,6 @@
 package com.server.glol.summoner.facade
 
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
 import com.server.glol.global.exception.ErrorCode.NOT_FOUND_SUMMONER
@@ -27,7 +27,7 @@ class RemoteSummonerFacadeTest: DescribeSpec({
         context("유효하지 않은 name을 받을 경우") {
             every { remoteSummoner.getSummonerByName(NAME) } throws CustomException(NOT_FOUND_SUMMONER)
 
-            it("Not found summoner exception을 반환한다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     remoteSummoner.getSummonerByName(NAME)
                 }
@@ -47,7 +47,7 @@ class RemoteSummonerFacadeTest: DescribeSpec({
         context("유효하지 않은 puuid을 받을 경우") {
             every { remoteSummoner.getSummonerByPuuid(PUUID) } throws CustomException(NOT_FOUND_SUMMONER)
 
-            it("Not found summoner exception을 반환한다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     remoteSummoner.getSummonerByPuuid(PUUID)
                 }

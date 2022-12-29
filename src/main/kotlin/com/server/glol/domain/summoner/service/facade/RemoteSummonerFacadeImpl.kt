@@ -1,6 +1,6 @@
 package com.server.glol.domain.summoner.service.facade
 
-import com.server.glol.domain.summoner.repository.projection.SummonerDto
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.global.config.properties.RiotProperties
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient

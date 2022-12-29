@@ -52,7 +52,7 @@ class MatchServiceTest : DescribeSpec({
             context("해당 matchId가 존재하지 않을 때") {
                 every { remoteMatch.getMatch(notExistsMatchId) } throws CustomException(NOT_FOUND_MATCH)
 
-                it("Not found match CustomException를 던진다") {
+                it("예외를 반환한다") {
                     shouldThrow<CustomException> {
                         remoteMatch.getMatch(notExistsMatchId)
                     }
@@ -85,7 +85,7 @@ class MatchServiceTest : DescribeSpec({
                 matchService.getMatches(notExistsName, matchPageable, pageable)
             } throws CustomException(NOT_FOUND_SUMMONER)
 
-            it("Not found Summoner Exception을 던진다") {
+            it("예외를 반환한다") {
                 shouldThrow<CustomException> {
                     matchService.getMatches(notExistsName, matchPageable, pageable)
                 }

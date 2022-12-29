@@ -1,4 +1,0 @@
-### League 조회
-
-GET {{glol-api}}/league/권선징악어부
-Content-Type: application/json

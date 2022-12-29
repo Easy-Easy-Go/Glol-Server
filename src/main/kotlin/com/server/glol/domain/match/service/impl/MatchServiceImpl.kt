@@ -1,20 +1,21 @@
 package com.server.glol.domain.match.service.impl
 
-import com.server.glol.domain.league.service.LeagueService
+import com.server.glol.domain.champion.entities.Champion
+import com.server.glol.domain.champion.repository.ChampionRepository
+import com.server.glol.domain.item.entities.Item
+import com.server.glol.domain.item.repository.ItemRepository
+import com.server.glol.domain.summonerProfile.service.SummonerProfileService
 import com.server.glol.domain.match.dto.*
 import com.server.glol.domain.match.dto.projection.MatchesDto
 import com.server.glol.domain.match.dto.riot.matchv5.MatchDto
-import com.server.glol.domain.match.entities.Champion
-import com.server.glol.domain.match.entities.Item
 import com.server.glol.domain.match.entities.Match
-import com.server.glol.domain.match.repository.ChampionRepository
-import com.server.glol.domain.match.repository.ItemRepository
 import com.server.glol.domain.match.repository.MatchCustomRepository
 import com.server.glol.domain.match.repository.MatchRepository
 import com.server.glol.domain.match.service.MatchService
 import com.server.glol.domain.match.service.facade.RemoteMatchFacade
 import com.server.glol.domain.summoner.entities.Summoner
 import com.server.glol.domain.summoner.repository.SummonerRepository
+import com.server.glol.domain.summoner.dto.projection.SummonerDto
 import com.server.glol.domain.summoner.service.SummonerService
 import com.server.glol.domain.summoner.service.facade.RemoteSummonerFacade
 import com.server.glol.global.exception.CustomException
@@ -40,7 +41,7 @@ class MatchServiceImpl(
     private val itemRepository: ItemRepository,
     private val remoteMatchFacade: RemoteMatchFacade,
     private val championRepository: ChampionRepository,
-    private val leagueService: LeagueService,
+    private val summonerProfileService: SummonerProfileService,
     private val remoteSummonerFacade: RemoteSummonerFacade,
 ) : MatchService {
 
@@ -56,16 +57,16 @@ class MatchServiceImpl(
 
         val puuid = summonerService.getPuuid(name)
 
-        val matchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
+        val getMatchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
 
-        renewalStatusCheck(name, matchIds.first())
+        renewalStatusCheck(name, getMatchIds.first())
 
-        matchIds.filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
+        getMatchIds.filterNot { matchRepository.existsByMatchId(it) }.toMutableList()
             .let { matchIds ->
                 entitySave(getMatchesDetail(matchIds))
             }
 
-        leagueService.saveLeague(name)
+        summonerProfileService.saveSummonerProfile(name)
     }
 
     override fun getMatch(matchId: String): MatchResponse {
@@ -133,17 +134,23 @@ class MatchServiceImpl(
                 async(Dispatchers.IO) {
                     remoteSummonerFacade.getSummonerByPuuid(puuid)
                 }
-            }.awaitAll().map { summoner ->
-                summonerRepository.save(Summoner(summoner))
-            }
+            }.awaitAll().let { summonerRepository.saveAll(it.map { it.toSummoner() }) }
         }
     }
 
-    private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> {
-        return toMatchDetailDto(matchIds.map { matchId ->
+    private fun SummonerDto.toSummoner(): Summoner = Summoner(
+        id = this.id,
+        accountId = this.accountId,
+        name = this.name,
+        puuid = this.puuid,
+        profileIconId = this.profileIconId,
+        level = this.summonerLevel
+    )
+
+    private fun getMatchesDetail(matchIds: MutableList<String>): MutableList<MatchDetailDto> =
+        toMatchDetailDto(matchIds.map { matchId ->
             remoteMatchFacade.getMatch(matchId)
         }.toMutableList())
-    }
 
     private fun toMatchDetailDto(matchDto: MutableList<MatchDto>): MutableList<MatchDetailDto> {
         val matchDetailDto: MutableList<MatchDetailDto> = mutableListOf()
