@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class RemoteSummonerProfileFacadeImpl(
-    private val riotProperties: RiotProperties,
     private val webClient: WebClient,
 ) : RemoteSummonerProfileFacade {
     override fun getSummonerProfile(summonerAccount: String): MutableSet<SummonerProfileDto> {
@@ -20,7 +19,7 @@ class RemoteSummonerProfileFacadeImpl(
 
         val mapper = ObjectMapper()
         return mapper.convertValue(webClient.mutate().build()
-            .get().uri(riotProperties.leagueSummonerAccountUrl + summonerAccount)
+            .get().uri(RiotProperties.SUMMONER_PROFILE_ACCOUNT_URL + summonerAccount)
             .retrieve().bodyToMono(summonerProfileDto::class.java).onErrorResume {
                 throw CustomException(NOT_FOUND_SUMMONER_PROFILE)
             }.block(),

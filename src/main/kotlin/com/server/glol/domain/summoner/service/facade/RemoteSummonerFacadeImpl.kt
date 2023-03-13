@@ -7,13 +7,12 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class RemoteSummonerFacadeImpl(
-    private val riotProperties: RiotProperties,
     private val webClient: WebClient,
 ) : RemoteSummonerFacade {
 
     override fun getSummonerByName(name: String): SummonerDto {
         return webClient.mutate().build()
-            .get().uri(riotProperties.summonerAPIUrl + name)
+            .get().uri(RiotProperties.SUMMONER_API_URL + name)
             .retrieve()
             .bodyToMono(SummonerDto().javaClass)
             .block()!!
@@ -21,7 +20,7 @@ class RemoteSummonerFacadeImpl(
 
     override fun getSummonerByPuuid(puuid: String): SummonerDto {
         return webClient.mutate().build()
-            .get().uri(riotProperties.summonerByPuuidAPIURL + puuid)
+            .get().uri(RiotProperties.SUMMONER_BY_PUUID_URL + puuid)
             .retrieve()
             .bodyToMono(SummonerDto().javaClass)
             .block()!!

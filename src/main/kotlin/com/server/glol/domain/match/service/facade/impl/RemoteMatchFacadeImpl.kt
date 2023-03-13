@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient
 @Service
 class
 RemoteMatchFacadeImpl(
-    private val riotProperties: RiotProperties,
     private val webClient: WebClient,
 ) : RemoteMatchFacade {
 
@@ -25,7 +24,7 @@ RemoteMatchFacadeImpl(
 
         return webClient.mutate().build()
             .get()
-            .uri(riotProperties.matchUUIDUrl + puuid + "/ids?count=" + matchPageable.count)
+            .uri(RiotProperties.MATCH_UUID_URL + puuid + "/ids?count=" + matchPageable.count)
             .retrieve()
             .bodyToMono(matchIds::class.java)
             .onErrorResume {
@@ -37,7 +36,7 @@ RemoteMatchFacadeImpl(
 
     override fun getMatch(matchId: String): MatchDto =
         webClient.mutate().build()
-            .get().uri(riotProperties.matchesMatchIdUrl + matchId)
+            .get().uri(RiotProperties.MATCHES_MATCH_ID_URL + matchId)
             .retrieve()
             .bodyToMono(MatchDto().javaClass)
             .onErrorResume {

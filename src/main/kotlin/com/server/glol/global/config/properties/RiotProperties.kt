@@ -1,29 +1,13 @@
 package com.server.glol.global.config.properties
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
+class RiotProperties{
 
-@Component
-class RiotProperties(
-        @Value("\${riot.secretKey}")
-        val secretKey: String,
-
-        @Value("\${riot.summoner.name.url}")
-        val summonerAPIUrl: String,
-
-        @Value("\${riot.summoner.puuid.url}")
-        val summonerByPuuidAPIURL: String,
-
-        @Value("\${riot.match.matches.uuid.url}")
-        val matchUUIDUrl: String,
-
-        @Value("\${riot.match.matches.matchId.url}")
-        val matchesMatchIdUrl: String,
-
-        @Value("\${riot.league.url}")
-        val leagueSummonerAccountUrl: String,
-
-        @Value("\${riot.origin}")
-        val origin: String
-) {
+        companion object {
+                const val SUMMONER_API_URL: String = "https://kr.api.riotgames.com/lol/summoner/v4/summoners"
+                const val SUMMONER_BY_PUUID_URL: String = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/"
+                const val MATCH_UUID_URL: String = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/"
+                const val MATCHES_MATCH_ID_URL: String = "https://asia.api.riotgames.com/lol/match/v5/matches/"
+                const val SUMMONER_PROFILE_ACCOUNT_URL: String = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/"
+                const val ORIGIN: String = "https://developer.riotgames.com"
+        }
 }
