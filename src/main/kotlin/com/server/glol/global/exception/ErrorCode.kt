@@ -1,26 +1,26 @@
 package com.server.glol.global.exception
 
-enum class ErrorCode(val status: Int, val msg: String) {
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 
+enum class ErrorCode(val status: HttpStatus, val msg: String) {
     // Summoner Exception
-    ALREADY_EXISTS_SUMMONER(409, "Already Exists Summoner"),
-    NOT_FOUND_SUMMONER(404, "Not Found Summoner"),
+    ALREADY_EXISTS_SUMMONER(CONFLICT, "Already Exists Summoner"),
+    NOT_FOUND_SUMMONER(NOT_FOUND, "Not Found Summoner"),
 
     // SummonerProfile Exception
-    NOT_FOUND_SUMMONER_PROFILE(404, "SummonerProfile does not Exists"),
+    NOT_FOUND_SUMMONER_PROFILE(NOT_FOUND, "SummonerProfile does not Exists"),
 
     // Match Exception
-    NOT_FOUND_MATCH(404, "Not Found Match"),
-    ALREADY_RENEWED(202, "Already Renewed"),
+    NOT_FOUND_MATCH(NOT_FOUND, "Not Found Match"),
+    ALREADY_RENEWED(ACCEPTED, "Already Renewed"),
 
     // Affiliation Exception
 
     // Team Exception
-    NOT_FOUND_TEAM(404, "Not Found Team"),
-    ALREADY_EXISTS_TEAM(409, "Already Exists Team"),
+    NOT_FOUND_TEAM(NOT_FOUND, "Not Found Team"),
+    ALREADY_EXISTS_TEAM(CONFLICT, "Already Exists Team"),
 
     // Pageable Exception
-    NOT_FOUND_SORT(404, "Not found Sort"),;
-
-
+    NOT_FOUND_SORT(NOT_FOUND, "Not found Sort"),;
 }

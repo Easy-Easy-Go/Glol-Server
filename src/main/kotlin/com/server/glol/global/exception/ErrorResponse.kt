@@ -1,6 +1,5 @@
 package com.server.glol.global.exception
 
-import org.springframework.http.ResponseEntity
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

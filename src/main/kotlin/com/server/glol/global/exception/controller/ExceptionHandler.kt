@@ -11,7 +11,7 @@ class ExceptionHandler {
 
     @ExceptionHandler(CustomException::class)
     protected fun handleBaseException(exception: CustomException): ResponseEntity<ErrorResponse> {
-        return ResponseEntity.status(exception.errorCode.status)
-            .body(ErrorResponse(exception.errorCode.status, exception.errorCode.msg))
+        return ResponseEntity.status(exception.errorCode.status.value())
+            .body(ErrorResponse(exception.errorCode.status.value(), exception.errorCode.msg))
     }
 }
