@@ -1,0 +1,57 @@
+servlet:
+  messages:
+    encoding: UTF-8
+    basename: i18n/exception
+  h2:
+    console:
+      settings:
+        web-allow-others: 'true'
+      enabled: 'true'
+      path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        show_sql: 'true'
+        format_sql: 'true'
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+  datasource:
+    username: sa
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  encoding:
+    force: 'true'
+origin: https://developer.riotgames.com
+summoner-profile:
+  url: https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/
+summoner:
+  url: https://kr.api.riotgames.com/lol/summoner/v4/summoners
+  puuid:
+    url: https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/
+  name:
+    url: https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/
+match:
+  url: https://asia.api.riotgames.com/lol/match/v5/matches/
+spring:
+  profile:
+    active: local
+    include: riot
+    group:
+      local: riot
+matches:
+  uuid:
+    url: https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/
+  matchId:
+    url: https://asia.api.riotgames.com/lol/match/v5/matches/
+server:
+  port: '8080'
+secretKey: 2C5TyQ9ebMK9iLzV1hhZSMCtRfwBkfbgOUfIpA+tuTOkjVUWNBVnNdT0d9jmCX4Tx8qkhn/2rBDwp7pjjB+Q8Q==
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
