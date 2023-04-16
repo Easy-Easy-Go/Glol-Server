@@ -1,29 +1,23 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.7.4"
-    id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    id("org.springframework.boot") version "2.7.10"
+    id("io.spring.dependency-management") version "1.0.15.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
-    kotlin("kapt") version "1.7.10"
+    kotlin("kapt") version "1.7.21"
 }
 
-group = "com.server"
+group = "glol"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+
     // ** starter ** //
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
@@ -31,6 +25,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     // ** coroutines ** //
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
@@ -46,12 +42,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // ** querydsl ** //
-    val querydslVersion = "5.0.0"
-    implementation("com.querydsl:querydsl-jpa:$querydslVersion")
-    kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
-
-    // cache, redis
-//	implementation("org.springframework.boot:spring-boot-starter-cache")
+    api("com.querydsl:querydsl-jpa")
+    kapt(group = "com.querydsl", name = "querydsl-apt", classifier = "jpa")
 
     // ** test ** //
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -65,13 +57,34 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:5.5.4")
 }
 
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs("src/main/resources", "path/to/other/resources")
+        }
+    }
+}
+
+tasks {
+    processResources {
+        duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+    }
 }

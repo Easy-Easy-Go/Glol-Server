@@ -16,7 +16,7 @@
 
 ## 🗺 ERD
 
-![erd](/src/resources/glol-server-erd.png)
+![erd](/src/main/resources/glol-server-erd.png)
 
 ## 프로젝트 기능
 
