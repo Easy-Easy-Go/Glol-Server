@@ -23,6 +23,7 @@ data class ParticipantDto(
     val challenges: Challenges,
     val totalDamageDealtToChampions: Int,
     val totalMinionsKilled: Int,
+    val summonerId: String,
     val summoner1Id: Int,
     val summoner2Id: Int,
 )

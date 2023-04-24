@@ -31,6 +31,7 @@ data class MatchDetailDto(
     val name: String = "",
     val summoner1Id: Int = 0,
     val summoner2Id: Int = 0,
+    val summonerId: String,
     val participantsPuuid: MutableList<String> = mutableListOf(),
 ) {
     constructor(matchId: String, queueId: String, gameDuration: Int, gameCreation: Long,participantsPuuid: MutableList<String>, participant: ParticipantDto) : this(
@@ -62,6 +63,7 @@ data class MatchDetailDto(
         totalDamageDealtToChampions = participant.totalDamageDealtToChampions,
         summoner1Id = participant.summoner1Id,
         summoner2Id = participant.summoner2Id,
+        summonerId = participant.summonerId,
         participantsPuuid = participantsPuuid
     )
 }

@@ -49,13 +49,7 @@ class MatchServiceImpl(
 
     @Transactional
     override fun renewalMatches(name: String, matchPageable: MatchPageable) {
-
-        if (isNotExistsSummoner(name)) {
-            log.info("${NOT_FOUND_SUMMONER.msg} in method existsSummonerCheck")
-            throw CustomException(NOT_FOUND_SUMMONER)
-        }
-
-        val puuid = summonerService.getPuuid(name)
+        val puuid = remoteSummonerFacade.getSummonerByName(name).puuid
 
         val getMatchIds = remoteMatchFacade.getMatchIds(puuid, matchPageable)
 
@@ -65,8 +59,6 @@ class MatchServiceImpl(
             .let { matchIds ->
                 entitySave(getMatchesDetail(matchIds))
             }
-
-        summonerProfileService.saveSummonerProfile(name)
     }
 
     override fun getMatch(matchId: String): MatchResponse {
@@ -118,6 +110,7 @@ class MatchServiceImpl(
 
             summonerRepository.findSummonerByName(matchDetail.name)!!
                 .let { summoner ->
+                    summoner.updateSummonerId(matchDetail.summonerId)
                     matchRepository.save(Match(matchDetail, summoner))
                 }.let { match ->
                     itemRepository.save(Item(matchDetail, match))
@@ -128,6 +121,7 @@ class MatchServiceImpl(
 
     private fun participantsSave(match: MatchDetailDto) {
         runBlocking {
+
             match.participantsPuuid.filterNot { puuid ->
                 summonerRepository.existsSummonerByPuuid(puuid)
             }.map { puuid ->

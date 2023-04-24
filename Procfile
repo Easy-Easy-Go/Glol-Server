@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/build/libs/glol-0.0.1-SNAPSHOT.jar

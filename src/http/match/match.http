@@ -1,5 +1,5 @@
 ### 전적 갱신
-POST {{glol-api}}/match/renewal/권선징악어부/?queue=420&count=1
+POST {{glol-api}}/match/renewal/권선징악어부/?count=3
 Content-Type: application/json
 
 ### 전적 단일 조회
