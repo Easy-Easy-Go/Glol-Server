@@ -1,13 +1,32 @@
 package com.server.glol.global.config.properties
 
-class RiotProperties{
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
-        companion object {
-                const val SUMMONER_API_URL: String = "https://kr.api.riotgames.com/lol/summoner/v4/summoners"
-                const val SUMMONER_BY_PUUID_URL: String = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/"
-                const val MATCH_UUID_URL: String = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/"
-                const val MATCHES_MATCH_ID_URL: String = "https://asia.api.riotgames.com/lol/match/v5/matches/"
-                const val SUMMONER_PROFILE_ACCOUNT_URL: String = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/"
-                const val ORIGIN: String = "https://developer.riotgames.com"
-        }
-}
+@Component
+class RiotProperties(
+
+    @Value("\${riot.summoner.url}")
+    val summonerUrl: String,
+
+    @Value("\${riot.summoner.name.url}")
+    val summonerByNameUrl: String,
+
+    @Value("\${riot.summoner.puuid.url}")
+    val summonerByPuuidUrl: String,
+
+    @Value("\${riot.matches.uuid.url}")
+    val matchesUUIDUrl: String,
+
+    @Value("\${riot.matches.matchId.url}")
+    val matchesByMatchIdUrl: String,
+
+    @Value("\${riot.summoner.profile.url}")
+    val summonerProfileUrl: String,
+
+    @Value("\${riot.origin}")
+    val origin: String,
+
+    @Value("\${riot.secretKey}")
+    var secretKey: String,
+)

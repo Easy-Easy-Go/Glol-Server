@@ -9,10 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 
 @Configuration
-class WebClientConfiguration{
-
-    @Value("\${secret-key}")
-    private var secretKey: String = ""
+class WebClientConfiguration(
+    private val riotProperties: RiotProperties
+){
 
     @Bean
     fun webClient(): WebClient {
@@ -20,8 +19,8 @@ class WebClientConfiguration{
             .defaultHeaders { header ->
                 header.contentType = MediaType.APPLICATION_JSON
                 header.acceptCharset = listOf(StandardCharsets.UTF_8)
-                header.set("X-Riot-Token", secretKey)
-                header.set("Origin", RiotProperties.ORIGIN)
+                header.set("X-Riot-Token", riotProperties.secretKey)
+                header.set("Origin", riotProperties.origin)
             }
             .build()
     }
